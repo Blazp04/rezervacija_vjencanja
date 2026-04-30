@@ -1,8 +1,8 @@
 import { lazy, Suspense } from "react"
 import { createBrowserRouter, Navigate } from "react-router"
-import { Spinner } from "@/components/spinner"
+import { Spinner } from "@/components/Spinner"
 
-const AdminLayout = lazy(() => import("@/pages/admin-layout"))
+const AdminLayout = lazy(() => import("@/routes/App/AppLayout"))
 
 const spinner = (
   <div className="flex min-h-svh items-center justify-center">
