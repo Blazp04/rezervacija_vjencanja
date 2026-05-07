@@ -6,7 +6,7 @@ const runtimeConfig = window.__APP_CONFIG__;
 export const API_BASE_URL =
   runtimeConfig?.VITE_BACKEND_URL ||
   import.meta.env.VITE_BACKEND_URL ||
-  "http://localhost:3000";
+  "http://localhost:8080";
 
 declare module "@tanstack/react-query" {
   interface Register {
@@ -69,12 +69,23 @@ export async function apiFetch<T>(
   if (!res.ok) {
     const body = await res.json().catch(() => null);
     const message =
-      body?.error?.message ?? `Request failed with status ${res.status}`;
+      body?.error ?? `Request failed with status ${res.status}`;
     const error = new Error(message) as Error & { status?: number; details?: unknown };
     error.status = res.status;
-    error.details = body?.error?.errors;
+    error.details = body?.details;
     throw error;
   }
 
   return res.json() as Promise<T>;
+}
+
+export async function apiRequest<T>(
+  path: string,
+  options: ApiFetchOptions = {},
+): Promise<T> {
+  const body = await apiFetch<{ data: T | null; error: string | null }>(path, options);
+  if (body.error) {
+    throw new Error(body.error);
+  }
+  return body.data!;
 }

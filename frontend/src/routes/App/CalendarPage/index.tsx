@@ -2,11 +2,6 @@ import { CalendarIcon } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 
 const days = ["Pon", "Uto", "Sri", "Čet", "Pet", "Sub", "Ned"]
-const events: Record<number, { label: string; color: string }> = {
-  4: { label: "Ana & Marko", color: "bg-primary/15 text-primary" },
-  11: { label: "Iva & Luka", color: "bg-amber-500/15 text-amber-700 dark:text-amber-400" },
-  18: { label: "Petra & Filip", color: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" },
-}
 
 export default function CalendarScreen() {
   return (
@@ -29,23 +24,18 @@ export default function CalendarScreen() {
             ))}
           </div>
           <div className="grid grid-cols-7 gap-1">
-            {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => {
-              const e = events[d]
-              return (
-                <div
-                  key={d}
-                  className="aspect-square rounded-md border bg-background p-2 flex flex-col"
-                >
-                  <span className="text-xs font-medium text-muted-foreground">{d}</span>
-                  {e && (
-                    <div className={`mt-auto text-[10px] rounded px-1 py-0.5 truncate ${e.color}`}>
-                      {e.label}
-                    </div>
-                  )}
-                </div>
-              )
-            })}
+            {Array.from({ length: 30 }, (_, i) => i + 1).map((d) => (
+              <div
+                key={d}
+                className="aspect-square rounded-md border bg-background p-2 flex flex-col"
+              >
+                <span className="text-xs font-medium text-muted-foreground">{d}</span>
+              </div>
+            ))}
           </div>
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            Kalendar termina dolazi uskoro.
+          </p>
         </CardContent>
       </Card>
     </div>

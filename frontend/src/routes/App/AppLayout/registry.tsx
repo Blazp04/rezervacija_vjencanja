@@ -12,6 +12,7 @@ import DashboardScreen from "@/routes/App/DashboardPage"
 import WeddingsListScreen from "@/routes/App/WeddingsPage"
 import WeddingDetailScreen from "@/routes/App/WeddingDetailPage"
 import PartnersListScreen from "@/routes/App/PartnersPage"
+import PartnerDetailScreen from "@/routes/App/PartnerDetailPage"
 import CalendarScreen from "@/routes/App/CalendarPage"
 import ReportsScreen from "@/routes/App/ReportsPage"
 import SettingsScreen from "@/routes/App/SettingsPage"
@@ -49,6 +50,12 @@ export const screens: ScreenRoute[] = [
     title: "Partneri",
     icon: UsersIcon,
     Component: PartnersListScreen,
+  },
+  {
+    pattern: /^\/partners\/(?<id>[^/]+)$/,
+    title: (p) => `Partner #${p.id}`,
+    icon: UsersIcon,
+    Component: PartnerDetailScreen,
   },
   {
     pattern: /^\/calendar$/,
@@ -100,10 +107,10 @@ export const navItems: Array<{
   icon: LucideIcon
   closeable?: boolean
 }> = [
-  { title: "Dashboard", path: "/dashboard", icon: LayoutDashboardIcon },
-  { title: "Vjenčanja", path: "/weddings", icon: HeartIcon },
-  { title: "Partneri", path: "/partners", icon: UsersIcon },
-  { title: "Kalendar", path: "/calendar", icon: CalendarIcon },
-  { title: "Izvještaji", path: "/reports", icon: FileTextIcon },
-  { title: "Postavke", path: "/settings", icon: SettingsIcon },
-]
+    { title: "Dashboard", path: "/dashboard", icon: LayoutDashboardIcon },
+    { title: "Vjenčanja", path: "/weddings", icon: HeartIcon },
+    { title: "Partneri", path: "/partners", icon: UsersIcon },
+    { title: "Kalendar", path: "/calendar", icon: CalendarIcon },
+    { title: "Izvještaji", path: "/reports", icon: FileTextIcon },
+    { title: "Postavke", path: "/settings", icon: SettingsIcon },
+  ]

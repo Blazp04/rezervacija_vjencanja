@@ -25,17 +25,17 @@ export default function SettingsScreen() {
         <CardContent className="space-y-3">
           <div className="grid gap-2">
             <Label>Naziv</Label>
-            <Input defaultValue="Wedding Planner d.o.o." />
+            <Input />
           </div>
           <div className="grid gap-2">
             <Label>OIB</Label>
-            <Input defaultValue="12345678901" />
+            <Input />
           </div>
           <div className="grid gap-2">
             <Label>Adresa</Label>
-            <Input defaultValue="Ilica 1, 10000 Zagreb" />
+            <Input />
           </div>
-          <Button className="w-fit">Spremi</Button>
+          <Button className="w-fit" disabled>Spremi</Button>
         </CardContent>
       </Card>
     </div>

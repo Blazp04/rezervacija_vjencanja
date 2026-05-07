@@ -1,0 +1,58 @@
+using Microsoft.EntityFrameworkCore;
+using RezervacijaVjencanja.Data;
+using RezervacijaVjencanja.Middleware;
+using RezervacijaVjencanja.Services.CatalogItems;
+using RezervacijaVjencanja.Services.Partners;
+using RezervacijaVjencanja.Services.PartnerTypes;
+using RezervacijaVjencanja.Services.PricingRules;
+using Scalar.AspNetCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// -- Database
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// -- Services
+builder.Services.AddScoped<IPartnerTypeService, PartnerTypeService>();
+builder.Services.AddScoped<IPartnerService, PartnerService>();
+builder.Services.AddScoped<ICatalogItemService, CatalogItemService>();
+builder.Services.AddScoped<IPricingRuleService, PricingRuleService>();
+
+// -- API
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+
+// -- CORS (React dev server)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactApp", policy =>
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
+var app = builder.Build();
+
+// -- Auto-migrate on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
+// -- Middleware pipeline
+app.UseMiddleware<GlobalExceptionMiddleware>();
+app.UseCors("ReactApp");
+
+// Scalar API docs
+app.MapOpenApi();
+app.MapScalarApiReference(options =>
+{
+    options.Title = "Rezervacija Vjencanja API";
+    options.Theme = ScalarTheme.Purple;
+});
+
+app.UseAuthorization();
+app.MapControllers();
+app.Run();

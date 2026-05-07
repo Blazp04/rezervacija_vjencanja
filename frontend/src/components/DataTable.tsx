@@ -32,6 +32,7 @@ export interface DataTableProps<TData, TValue> {
   onRowClick?: (row: TData) => void
   emptyMessage?: string
   pageSize?: number
+  isLoading?: boolean
 }
 
 export function DataTable<TData, TValue>({
@@ -42,6 +43,7 @@ export function DataTable<TData, TValue>({
   onRowClick,
   emptyMessage = "Nema rezultata.",
   pageSize = 10,
+  isLoading = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -108,7 +110,13 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
+                  Učitavanje...
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

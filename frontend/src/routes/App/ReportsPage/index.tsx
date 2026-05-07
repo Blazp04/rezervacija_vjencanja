@@ -1,12 +1,4 @@
-import { FileTextIcon, DownloadIcon } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-
-const reports = [
-  { title: "Mjesečni izvještaj — Travanj 2026", desc: "Sva vjenčanja, prihodi i partnerske fakture", size: "PDF · 1.2 MB" },
-  { title: "Pregled partnera Q1 2026", desc: "Aktivnost, ocjene i provizije", size: "PDF · 642 KB" },
-  { title: "CSV export rezervacija", desc: "Sirovi podaci za vanjsko knjigovodstvo", size: "CSV · 84 KB" },
-]
+import { FileTextIcon } from "lucide-react"
 
 export default function ReportsScreen() {
   return (
@@ -21,21 +13,9 @@ export default function ReportsScreen() {
         </div>
       </div>
 
-      <div className="grid gap-3">
-        {reports.map((r) => (
-          <Card key={r.title}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0">
-              <div>
-                <CardTitle className="text-base">{r.title}</CardTitle>
-                <CardDescription>{r.desc}</CardDescription>
-              </div>
-              <Button variant="outline" size="sm">
-                <DownloadIcon className="h-4 w-4" /> Preuzmi
-              </Button>
-            </CardHeader>
-            <CardContent className="text-xs text-muted-foreground">{r.size}</CardContent>
-          </Card>
-        ))}
+      <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
+        <FileTextIcon className="h-10 w-10 text-muted-foreground/40" />
+        <p className="text-muted-foreground text-sm">Nema dostupnih izvještaja.</p>
       </div>
     </div>
   )
