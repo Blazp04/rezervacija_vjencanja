@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RezervacijaVjencanja.Data;
 using RezervacijaVjencanja.Middleware;
+using RezervacijaVjencanja.Services.BandMembers;
 using RezervacijaVjencanja.Services.CatalogItems;
 using RezervacijaVjencanja.Services.Partners;
 using RezervacijaVjencanja.Services.PartnerTypes;
@@ -18,6 +19,7 @@ builder.Services.AddScoped<IPartnerTypeService, PartnerTypeService>();
 builder.Services.AddScoped<IPartnerService, PartnerService>();
 builder.Services.AddScoped<ICatalogItemService, CatalogItemService>();
 builder.Services.AddScoped<IPricingRuleService, PricingRuleService>();
+builder.Services.AddScoped<IBandMemberService, BandMemberService>();
 
 // -- API
 builder.Services.AddControllers();

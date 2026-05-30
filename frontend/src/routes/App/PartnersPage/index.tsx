@@ -1,11 +1,14 @@
 import { useMemo, useState } from "react"
 import { type ColumnDef } from "@tanstack/react-table"
-import { UsersIcon, PlusIcon } from "lucide-react"
+import { UsersIcon, PlusIcon, CopyIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
+} from "@/components/ui/dialog"
 import { DataTable } from "@/components/DataTable"
-import { usePartners, type PartnerListDto } from "@/services/partnersService"
+import { usePartners, useClonePartner, type PartnerListDto } from "@/services/partnersService"
 import { usePartnerTypes } from "@/services/partnerTypesService"
 import { useWorkspaceNavigate } from "@/routes/App/AppLayout/useWorkspaceNavigate"
 import { NewPartnerSheet } from "./NewPartnerSheet"
@@ -15,8 +18,10 @@ export default function PartnersListScreen() {
   const [selectedTypeId, setSelectedTypeId] = useState<number | undefined>(undefined)
   const [sheetOpen, setSheetOpen] = useState(false)
   const [typeSheetOpen, setTypeSheetOpen] = useState(false)
+  const [cloneTarget, setCloneTarget] = useState<PartnerListDto | null>(null)
   const { data: partners = [], isLoading, isError } = usePartners(selectedTypeId)
   const { data: partnerTypes = [] } = usePartnerTypes()
+  const clone = useClonePartner()
   const navigate = useWorkspaceNavigate()
 
   const columns = useMemo<ColumnDef<PartnerListDto>[]>(
@@ -51,6 +56,23 @@ export default function PartnersListScreen() {
           </Badge>
         ),
       },
+      {
+        id: "actions",
+        header: "",
+        cell: ({ row }) => (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={(e) => {
+              e.stopPropagation()
+              setCloneTarget(row.original)
+            }}
+            title="Kloniraj partnera"
+          >
+            <CopyIcon className="h-3.5 w-3.5" />
+          </Button>
+        ),
+      },
     ],
     [],
   )
@@ -61,6 +83,15 @@ export default function PartnersListScreen() {
         <p className="text-destructive">Greška pri učitavanju partnera.</p>
       </div>
     )
+  }
+
+  async function handleClone() {
+    if (!cloneTarget) return
+    try {
+      const cloned = await clone.mutateAsync(cloneTarget.id)
+      setCloneTarget(null)
+      navigate({ path: `/partners/${cloned.id}`, title: cloned.name })
+    } catch { /* global toast */ }
   }
 
   return (
@@ -124,7 +155,24 @@ export default function PartnersListScreen() {
 
       <NewPartnerSheet open={sheetOpen} onOpenChange={setSheetOpen} />
       <NewPartnerTypeSheet open={typeSheetOpen} onOpenChange={setTypeSheetOpen} />
+
+      {/* Clone confirmation */}
+      <Dialog open={!!cloneTarget} onOpenChange={(o) => !o && setCloneTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Kloniraj partnera</DialogTitle>
+            <DialogDescription>
+              Kloniraj &quot;{cloneTarget?.name}&quot;? Bit će kreirana kopija s cijelim katalogom, cjenikom i članovima benda (ako postoje).
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCloneTarget(null)}>Odustani</Button>
+            <Button onClick={handleClone} disabled={clone.isPending}>
+              {clone.isPending ? "Kloniranje..." : "Kloniraj"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
-

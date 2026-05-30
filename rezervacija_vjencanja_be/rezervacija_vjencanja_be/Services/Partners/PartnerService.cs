@@ -139,6 +139,99 @@ public sealed class PartnerService(AppDbContext db) : IPartnerService
         return ApiResponse<bool>.Ok(true);
     }
 
+    public async Task<ApiResponse<PartnerDto>> CloneAsync(int id)
+    {
+        var original = await db.Partners
+            .Include(p => p.PartnerType)
+            .Include(p => p.CatalogItems)
+                .ThenInclude(c => c.PricingRules)
+            .Include(p => p.BandMembers)
+            .FirstOrDefaultAsync(p => p.Id == id);
+
+        if (original is null)
+            return ApiResponse<PartnerDto>.Fail($"Partner with id {id} was not found.");
+
+        using var transaction = await db.Database.BeginTransactionAsync();
+        try
+        {
+            var now = DateTime.UtcNow;
+
+            var clone = new Partner
+            {
+                Name = original.Name + " (kopija)",
+                PartnerTypeId = original.PartnerTypeId,
+                Address = original.Address,
+                Phone = original.Phone,
+                Email = original.Email,
+                Website = original.Website,
+                CommissionPercent = original.CommissionPercent,
+                Notes = original.Notes,
+                ExtraFields = original.ExtraFields,
+                IsActive = original.IsActive,
+                CreatedAt = now,
+                UpdatedAt = now,
+            };
+            db.Partners.Add(clone);
+            await db.SaveChangesAsync();
+
+            foreach (var item in original.CatalogItems)
+            {
+                var cloneItem = new PartnerCatalogItem
+                {
+                    PartnerId = clone.Id,
+                    Name = item.Name,
+                    Category = item.Category,
+                    Description = item.Description,
+                    ItemType = item.ItemType,
+                    BasePrice = item.BasePrice,
+                    Metadata = item.Metadata,
+                    IsActive = item.IsActive,
+                    SortOrder = item.SortOrder,
+                    CreatedAt = now,
+                };
+                db.PartnerCatalogItems.Add(cloneItem);
+                await db.SaveChangesAsync();
+
+                foreach (var rule in item.PricingRules)
+                {
+                    db.PricingRules.Add(new PricingRule
+                    {
+                        CatalogItemId = cloneItem.Id,
+                        RuleType = rule.RuleType,
+                        DayOfWeek = rule.DayOfWeek,
+                        SpecificDate = rule.SpecificDate,
+                        Price = rule.Price,
+                        ValidFrom = rule.ValidFrom,
+                        ValidTo = rule.ValidTo,
+                    });
+                }
+            }
+
+            foreach (var member in original.BandMembers)
+            {
+                db.BandMembers.Add(new BandMember
+                {
+                    PartnerId = clone.Id,
+                    Name = member.Name,
+                    Role = member.Role,
+                    Phone = member.Phone,
+                    Email = member.Email,
+                });
+            }
+
+            await db.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            await db.Entry(clone).Reference(p => p.PartnerType).LoadAsync();
+            return ApiResponse<PartnerDto>.Ok(ToDto(clone));
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
     private static PartnerDto ToDto(Partner p) => new(
         p.Id, p.Name, p.Address, p.Phone, p.Email, p.Website,
         p.PartnerTypeId, p.PartnerType.Code, p.PartnerType.Name,
