@@ -10,10 +10,8 @@ namespace RezervacijaVjencanja.Controllers;
 
 [ApiController]
 [Route("api/weddings")]
-public sealed class WeddingsController(AppDbContext db) : ControllerBase
+public sealed class WeddingExportController(AppDbContext db) : ControllerBase
 {
-    // ── CSV Export: wedding partners ───────────────────────────────────────────
-
     [HttpGet("{id:int}/partners/export")]
     public async Task<IActionResult> ExportPartners(int id)
     {
