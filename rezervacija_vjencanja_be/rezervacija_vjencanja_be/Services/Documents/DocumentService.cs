@@ -287,27 +287,22 @@ public sealed class DocumentService(AppDbContext db) : IDocumentService
                 summary.Item().Background(Colors.Grey.Lighten4).Padding(12).Column(box =>
                 {
                     box.Item().Text("Financijski sažetak").FontSize(12).Bold();
-                    box.Item().PaddingTop(6).Row(r =>
+                    box.Item().PaddingTop(6).Table(t =>
                     {
-                        r.RelativeItem().Text("Ukupni trošak partnera:");
-                        r.ConstantItem(120).AlignRight().Text($"{totalPartnerCost:N2} KM").Bold();
-                    });
-                    box.Item().Row(r =>
-                    {
-                        r.RelativeItem().Text("Ukupna provizija agencije:");
-                        r.ConstantItem(120).AlignRight().Text($"{totalCommission:N2} KM").Bold().FontColor(Colors.Green.Darken2);
-                    });
-                    box.Item().Row(r =>
-                    {
-                        r.RelativeItem().Text("Ukupan prihod od klijenta:");
-                        r.ConstantItem(120).AlignRight().Text($"{totalClientRevenue:N2} KM").Bold();
-                    });
-                    box.Item().PaddingTop(8).BorderTop(2).BorderColor(Colors.Grey.Darken1).PaddingTop(8).Row(r =>
-                    {
-                        r.RelativeItem().Text("ZARADA AGENCIJE:").Bold().FontSize(12);
-                        r.ConstantItem(120).AlignRight()
-                            .Text($"{totalCommission:N2} KM")
-                            .Bold().FontSize(12).FontColor(Colors.Green.Darken3);
+                        t.ColumnsDefinition(c =>
+                        {
+                            c.RelativeColumn();
+                            c.ConstantColumn(180);
+                        });
+                        t.Cell().PaddingBottom(3).Text("Ukupni trošak partnera:");
+                        t.Cell().PaddingBottom(3).Text($"{totalPartnerCost:N2} KM").Bold();
+                        t.Cell().PaddingBottom(3).Text("Ukupna provizija agencije:");
+                        t.Cell().PaddingBottom(3).Text($"{totalCommission:N2} KM").Bold().FontColor(Colors.Green.Darken2);
+                        t.Cell().Text("Ukupan prihod od klijenta:");
+                        t.Cell().Text($"{totalClientRevenue:N2} KM").Bold();
+                        t.Cell().ColumnSpan(2).BorderTop(2).BorderColor(Colors.Grey.Darken1).Height(2);
+                        t.Cell().PaddingTop(4).Text("ZARADA AGENCIJE:").Bold().FontSize(12);
+                        t.Cell().PaddingTop(4).Text($"{totalCommission:N2} KM").Bold().FontSize(12).FontColor(Colors.Green.Darken3);
                     });
                 });
             });
