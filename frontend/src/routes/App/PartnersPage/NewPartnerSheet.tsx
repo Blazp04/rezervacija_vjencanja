@@ -121,6 +121,7 @@ export function NewPartnerSheet({ open, onOpenChange }: Props) {
                                 </Label>
                                 <Input
                                     id="np-name"
+                                    name="np-name"
                                     placeholder="npr. Bend Melodija"
                                     value={form.name}
                                     onChange={set("name")}
@@ -145,6 +146,7 @@ export function NewPartnerSheet({ open, onOpenChange }: Props) {
                                 >
                                     <SelectTrigger
                                         id="np-type"
+                                        name="np-type"
                                         className="w-full"
                                         aria-invalid={!!errors.partnerTypeId}
                                     >
@@ -169,6 +171,7 @@ export function NewPartnerSheet({ open, onOpenChange }: Props) {
                                 </Label>
                                 <Input
                                     id="np-commission"
+                                    name="np-commission"
                                     type="number"
                                     min={0}
                                     max={100}
@@ -192,6 +195,7 @@ export function NewPartnerSheet({ open, onOpenChange }: Props) {
                                         <Label htmlFor="np-address">Adresa</Label>
                                         <Input
                                             id="np-address"
+                                            name="np-address"
                                             placeholder="Ulica i broj, Grad"
                                             value={form.address}
                                             onChange={set("address")}
@@ -202,6 +206,7 @@ export function NewPartnerSheet({ open, onOpenChange }: Props) {
                                         <Label htmlFor="np-phone">Telefon</Label>
                                         <Input
                                             id="np-phone"
+                                            name="np-phone"
                                             type="tel"
                                             placeholder="+385 91 234 5678"
                                             value={form.phone}
@@ -213,6 +218,7 @@ export function NewPartnerSheet({ open, onOpenChange }: Props) {
                                         <Label htmlFor="np-email">E-mail</Label>
                                         <Input
                                             id="np-email"
+                                            name="np-email"
                                             type="email"
                                             placeholder="partner@primjer.hr"
                                             value={form.email}
@@ -224,6 +230,7 @@ export function NewPartnerSheet({ open, onOpenChange }: Props) {
                                         <Label htmlFor="np-website">Web stranica</Label>
                                         <Input
                                             id="np-website"
+                                            name="np-website"
                                             type="url"
                                             placeholder="https://www.primjer.hr"
                                             value={form.website}
@@ -241,6 +248,7 @@ export function NewPartnerSheet({ open, onOpenChange }: Props) {
                                     <Label htmlFor="np-notes" className="sr-only">Napomene</Label>
                                     <Textarea
                                         id="np-notes"
+                                        name="np-notes"
                                         placeholder="Interne napomene o partneru..."
                                         value={form.notes}
                                         onChange={set("notes")}
