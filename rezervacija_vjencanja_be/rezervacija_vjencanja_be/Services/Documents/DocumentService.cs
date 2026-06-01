@@ -184,15 +184,18 @@ public sealed class DocumentService(AppDbContext db) : IDocumentService
             });
 
             // Total
-            col.Item().PaddingTop(12).AlignRight().Column(summary =>
+            var grandTotalText = $"UKUPNO ZA UPLATU:  {grandTotal:N2} KM";
+            col.Item().PaddingTop(12).Table(totalTable =>
             {
-                summary.Item().BorderTop(2).BorderColor(Colors.BlueGrey.Darken2).PaddingTop(6).Row(row =>
+                totalTable.ColumnsDefinition(c =>
                 {
-                    row.RelativeItem().AlignRight()
-                        .Text("UKUPNO ZA UPLATU:").FontSize(13).Bold().FontColor(Colors.BlueGrey.Darken3);
-                    row.ConstantItem(100).AlignRight()
-                        .Text($"{grandTotal:N2} KM").FontSize(13).Bold().FontColor(Colors.BlueGrey.Darken3);
+                    c.RelativeColumn();
+                    c.ConstantColumn(220);
                 });
+                totalTable.Cell().ColumnSpan(2).BorderTop(2).BorderColor(Colors.BlueGrey.Darken2).Height(2);
+                totalTable.Cell().PaddingTop(6);
+                totalTable.Cell().PaddingTop(6).AlignRight()
+                    .Text(grandTotalText).FontSize(13).Bold().FontColor(Colors.BlueGrey.Darken3);
             });
         });
     }

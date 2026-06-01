@@ -9,7 +9,6 @@ namespace RezervacijaVjencanja.Controllers;
 public sealed class DocumentsController(IDocumentService documentService, IWeddingService weddingService) : ControllerBase
 {
     [HttpPost("invoice")]
-    [Produces("application/pdf")]
     [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -34,7 +33,6 @@ public sealed class DocumentsController(IDocumentService documentService, IWeddi
     }
 
     [HttpPost("internal-report")]
-    [Produces("application/pdf")]
     [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
