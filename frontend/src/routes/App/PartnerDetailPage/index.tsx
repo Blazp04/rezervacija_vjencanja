@@ -922,32 +922,6 @@ function CsvImportModal({ partnerId, open, onOpenChange, onSuccess }: CsvImportM
                 {step === "map" && preview && (
                     <div className="flex flex-col flex-1 min-h-0 gap-4 overflow-hidden">
                         <div className="overflow-y-auto flex-1 min-h-0 space-y-4 pr-1">
-                            <p className="text-xs text-muted-foreground">
-                                Pronađeni stupci: {preview.headers.join(", ")}
-                            </p>
-
-                            {/* Preview table */}
-                            <div className="overflow-x-auto border rounded-md">
-                                <table className="text-xs min-w-full">
-                                    <thead>
-                                        <tr className="bg-muted">
-                                            {preview.headers.map((h) => (
-                                                <th key={h} className="px-3 py-1.5 text-left font-medium whitespace-nowrap">{h}</th>
-                                            ))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {preview.preview.map((row, i) => (
-                                            <tr key={i} className="border-t">
-                                                {(row as string[]).map((cell, j) => (
-                                                    <td key={j} className="px-3 py-1.5 text-muted-foreground whitespace-nowrap">{cell}</td>
-                                                ))}
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-
                             <div className="space-y-2">
                                 {TARGET_FIELDS.map(({ key, label, required }) => (
                                     <div key={key} className="grid grid-cols-2 gap-3 items-center">
@@ -971,6 +945,33 @@ function CsvImportModal({ partnerId, open, onOpenChange, onSuccess }: CsvImportM
                                         </Select>
                                     </div>
                                 ))}
+                            </div>
+
+                            {/* Preview table */}
+                            <div>
+                                <p className="text-xs text-muted-foreground mb-2">
+                                    Pregled prvih redova iz datoteke:
+                                </p>
+                                <div className="overflow-x-auto border rounded-md">
+                                    <table className="text-xs min-w-full">
+                                        <thead>
+                                            <tr className="bg-muted">
+                                                {preview.headers.map((h) => (
+                                                    <th key={h} className="px-3 py-1.5 text-left font-medium whitespace-nowrap">{h}</th>
+                                                ))}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {preview.preview.map((row, i) => (
+                                                <tr key={i} className="border-t">
+                                                    {(row as string[]).map((cell, j) => (
+                                                        <td key={j} className="px-3 py-1.5 text-muted-foreground whitespace-nowrap">{cell}</td>
+                                                    ))}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
 

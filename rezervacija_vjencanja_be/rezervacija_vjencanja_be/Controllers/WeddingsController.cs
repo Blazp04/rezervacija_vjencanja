@@ -1,82 +1,63 @@
-using System.Globalization;
-using System.Text;
-using CsvHelper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RezervacijaVjencanja.Common;
-using RezervacijaVjencanja.Data;
+using RezervacijaVjencanja.DTOs.Weddings;
+using RezervacijaVjencanja.Services.Weddings;
 
 namespace RezervacijaVjencanja.Controllers;
 
 [ApiController]
 [Route("api/weddings")]
-public sealed class WeddingsController(AppDbContext db) : ControllerBase
+public sealed class WeddingsController(IWeddingService service) : ControllerBase
 {
-    // ── CSV Export: wedding partners ───────────────────────────────────────────
-
-    [HttpGet("{id:int}/partners/export")]
-    public async Task<IActionResult> ExportPartners(int id)
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<WeddingListDto>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll([FromQuery] string? status)
     {
-        var wedding = await db.Weddings
-            .AsNoTracking()
-            .FirstOrDefaultAsync(w => w.Id == id);
+        var result = await service.GetAllAsync(status);
+        return Ok(result);
+    }
 
-        if (wedding is null)
-            return NotFound(ApiResponse<string>.Fail($"Wedding with id {id} was not found."));
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<WeddingDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<WeddingDto>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var result = await service.GetByIdAsync(id);
+        if (result.Error is not null)
+            return result.Error.Contains("not found") ? NotFound(result) : BadRequest(result);
+        return Ok(result);
+    }
 
-        var partners = await db.WeddingPartners
-            .AsNoTracking()
-            .Include(wp => wp.Partner).ThenInclude(p => p.PartnerType)
-            .Include(wp => wp.CatalogItem)
-            .Where(wp => wp.WeddingId == id)
-            .OrderBy(wp => wp.Partner.Name)
-            .ToListAsync();
+    [HttpPost]
+    [ProducesResponseType(typeof(ApiResponse<WeddingDto>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<WeddingDto>), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create([FromBody] CreateWeddingRequest request)
+    {
+        var result = await service.CreateAsync(request);
+        if (result.Error is not null) return BadRequest(result);
+        return CreatedAtAction(nameof(GetById), new { id = result.Data!.Id }, result);
+    }
 
-        using var writer = new StringWriter();
-        using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+    [HttpPut("{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<WeddingDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<WeddingDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<WeddingDto>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateWeddingRequest request)
+    {
+        var result = await service.UpdateAsync(id, request);
+        if (result.Error is not null)
+            return result.Error.Contains("not found") ? NotFound(result) : BadRequest(result);
+        return Ok(result);
+    }
 
-        csv.WriteField("partnerName");
-        csv.WriteField("partnerType");
-        csv.WriteField("serviceName");
-        csv.WriteField("status");
-        csv.WriteField("plannedPrice");
-        csv.WriteField("actualPrice");
-        csv.WriteField("commissionPercent");
-        csv.WriteField("commissionAmount");
-        csv.WriteField("clientPrice");
-        csv.WriteField("notes");
-        await csv.NextRecordAsync();
-
-        foreach (var wp in partners)
-        {
-            var commission = wp.ActualPrice.HasValue && wp.CommissionPercent.HasValue
-                ? wp.ActualPrice.Value * wp.CommissionPercent.Value / 100m
-                : (decimal?)null;
-            var clientPrice = wp.ActualPrice.HasValue && commission.HasValue
-                ? wp.ActualPrice.Value + commission.Value
-                : (decimal?)null;
-
-            csv.WriteField(wp.Partner.Name);
-            csv.WriteField(wp.Partner.PartnerType.Name);
-            csv.WriteField(wp.CatalogItem?.Name ?? "");
-            csv.WriteField(wp.Status);
-            csv.WriteField(wp.PlannedPrice?.ToString("F2", CultureInfo.InvariantCulture) ?? "");
-            csv.WriteField(wp.ActualPrice?.ToString("F2", CultureInfo.InvariantCulture) ?? "");
-            csv.WriteField(wp.CommissionPercent?.ToString("F2", CultureInfo.InvariantCulture) ?? "");
-            csv.WriteField(commission?.ToString("F2", CultureInfo.InvariantCulture) ?? "");
-            csv.WriteField(clientPrice?.ToString("F2", CultureInfo.InvariantCulture) ?? "");
-            csv.WriteField(wp.Notes ?? "");
-            await csv.NextRecordAsync();
-        }
-
-        var safeName = string.Concat(wedding.Name.Where(c => !Path.GetInvalidFileNameChars().Contains(c)));
-        var date = DateTime.UtcNow.ToString("yyyy-MM-dd");
-        var filename = $"partneri-{safeName}-{date}.csv";
-
-        var bom = Encoding.UTF8.GetPreamble();
-        var content = Encoding.UTF8.GetBytes(writer.ToString());
-        var bytes = bom.Concat(content).ToArray();
-
-        return File(bytes, "text/csv", filename);
+    [HttpDelete("{id:int}")]
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var result = await service.DeleteAsync(id);
+        if (result.Error is not null)
+            return result.Error.Contains("not found") ? NotFound(result) : BadRequest(result);
+        return Ok(result);
     }
 }

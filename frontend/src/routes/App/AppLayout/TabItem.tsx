@@ -113,6 +113,8 @@ export const TabItem = memo(function TabItem({ tab, panel, variant = "global", i
         {Icon && <Icon className={cn(isCompact ? "h-3 w-3" : "h-4 w-4", "shrink-0")} />}
         {isRenaming ? (
           <input
+            id={`tab-rename-${tab.id}`}
+            name={`tab-rename-${tab.id}`}
             ref={inputRef}
             value={renameValue}
             onChange={(e) => setRenameValue(e.target.value.slice(0, 32))}

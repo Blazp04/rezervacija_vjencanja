@@ -31,6 +31,8 @@ export const queryClient = new QueryClient({
       if (message) toast.success(message);
     },
     onError: (error, _variables, _context, mutation) => {
+      // 409 conflict errors are displayed inline in the dialog — suppress the generic toast
+      if ((error as Error & { status?: number }).status === 409) return;
       const message = mutation.options.meta?.errorMessage;
       toast.error(message ?? error.message ?? "Došlo je do greške");
     },

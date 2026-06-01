@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RezervacijaVjencanja.Data;
 
@@ -11,9 +12,11 @@ using RezervacijaVjencanja.Data;
 namespace rezervacija_vjencanja_be.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260530160931_PendingChanges")]
+    partial class PendingChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -305,140 +308,6 @@ namespace rezervacija_vjencanja_be.Data.Migrations
                             t.HasCheckConstraint("CHK_PartnerCatalogItems_ItemType", "ItemType IN ('SERVICE', 'PRODUCT', 'SONG')");
 
                             t.HasCheckConstraint("CHK_PartnerCatalogItems_Metadata", "Metadata IS NULL OR ISJSON(Metadata) = 1");
-                        });
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BasePrice = 800m,
-                            Category = "Bend",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "4-satna svirka",
-                            PartnerId = 1,
-                            SortOrder = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BasePrice = 1200m,
-                            Category = "Bend",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "6-satna svirka",
-                            PartnerId = 1,
-                            SortOrder = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BasePrice = 500m,
-                            Category = "DJ",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "DJ za plesnu muziku",
-                            PartnerId = 1,
-                            SortOrder = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            BasePrice = 600m,
-                            Category = "DJ",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "DJ svirka (4h)",
-                            PartnerId = 2,
-                            SortOrder = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BasePrice = 1000m,
-                            Category = "DJ",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "DJ svirka (8h)",
-                            PartnerId = 2,
-                            SortOrder = 2
-                        },
-                        new
-                        {
-                            Id = 6,
-                            BasePrice = 1500m,
-                            Category = "Dekoracija",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "Dekoracija sale",
-                            PartnerId = 3,
-                            SortOrder = 1
-                        },
-                        new
-                        {
-                            Id = 7,
-                            BasePrice = 150m,
-                            Category = "Cvijeće",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "PRODUCT",
-                            Name = "Cvjetni aranžman za stol",
-                            PartnerId = 3,
-                            SortOrder = 2
-                        },
-                        new
-                        {
-                            Id = 8,
-                            BasePrice = 400m,
-                            Category = "Torte",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "Torta sa jagodama",
-                            PartnerId = 4,
-                            SortOrder = 1
-                        },
-                        new
-                        {
-                            Id = 9,
-                            BasePrice = 100m,
-                            Category = "Kolačići",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "PRODUCT",
-                            Name = "Kolačići (1kg)",
-                            PartnerId = 4,
-                            SortOrder = 2
-                        },
-                        new
-                        {
-                            Id = 10,
-                            BasePrice = 2000m,
-                            Category = "Fotografija",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "Fotografiranje (8h)",
-                            PartnerId = 5,
-                            SortOrder = 1
-                        },
-                        new
-                        {
-                            Id = 11,
-                            BasePrice = 500m,
-                            Category = "Proizvodi",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "PRODUCT",
-                            Name = "Foto album (100 str)",
-                            PartnerId = 5,
-                            SortOrder = 2
                         });
                 });
 

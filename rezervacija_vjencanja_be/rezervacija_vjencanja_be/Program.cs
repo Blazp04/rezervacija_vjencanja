@@ -1,12 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using RezervacijaVjencanja.Data;
 using RezervacijaVjencanja.Middleware;
 using RezervacijaVjencanja.Services.BandMembers;
 using RezervacijaVjencanja.Services.CatalogItems;
+using RezervacijaVjencanja.Services.Documents;
 using RezervacijaVjencanja.Services.Partners;
 using RezervacijaVjencanja.Services.PartnerTypes;
 using RezervacijaVjencanja.Services.PricingRules;
+using RezervacijaVjencanja.Services.WeddingPartners;
+using RezervacijaVjencanja.Services.WeddingTemplates;
+using RezervacijaVjencanja.Services.Weddings;
 using Scalar.AspNetCore;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +27,10 @@ builder.Services.AddScoped<IPartnerService, PartnerService>();
 builder.Services.AddScoped<ICatalogItemService, CatalogItemService>();
 builder.Services.AddScoped<IPricingRuleService, PricingRuleService>();
 builder.Services.AddScoped<IBandMemberService, BandMemberService>();
+builder.Services.AddScoped<IWeddingService, WeddingService>();
+builder.Services.AddScoped<IWeddingTemplateService, WeddingTemplateService>();
+builder.Services.AddScoped<IWeddingPartnerService, WeddingPartnerService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 // -- API
 builder.Services.AddControllers();
@@ -29,9 +40,13 @@ builder.Services.AddOpenApi();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactApp", policy =>
-        policy.WithOrigins("http://localhost:5173", "http://localhost:3000")
-              .AllowAnyHeader()
-              .AllowAnyMethod());
+        policy.SetIsOriginAllowed(origin =>
+        {
+            var uri = new Uri(origin);
+            return uri.Host == "localhost";
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod());
 });
 
 var app = builder.Build();

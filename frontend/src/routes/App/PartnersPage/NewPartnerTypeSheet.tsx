@@ -132,6 +132,7 @@ export function NewPartnerTypeSheet({ open, onOpenChange }: Props) {
                             <Field orientation="horizontal">
                                 <input
                                     id="npt-booking"
+                                    name="npt-booking"
                                     type="checkbox"
                                     checked={form.hasBooking}
                                     onChange={(e) => setForm((prev) => ({ ...prev, hasBooking: e.target.checked }))}

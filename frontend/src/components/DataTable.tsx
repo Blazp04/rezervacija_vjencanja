@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useId } from "react"
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -45,6 +45,7 @@ export function DataTable<TData, TValue>({
   pageSize = 10,
   isLoading = false,
 }: DataTableProps<TData, TValue>) {
+  const instanceId = useId()
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
@@ -67,6 +68,8 @@ export function DataTable<TData, TValue>({
         <div className="relative max-w-sm">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
+            id={`datatable-search-${instanceId}-${searchKey}`}
+            name={`datatable-search-${instanceId}-${searchKey}`}
             value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
             onChange={(e) => table.getColumn(searchKey)?.setFilterValue(e.target.value)}
             placeholder={searchPlaceholder}
@@ -89,7 +92,7 @@ export function DataTable<TData, TValue>({
                         <button
                           type="button"
                           onClick={header.column.getToggleSortingHandler()}
-                          className="inline-flex cursor-pointer items-center gap-1.5 hover:text-foreground transition-colors"
+                          className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {sorted === "asc" ? (

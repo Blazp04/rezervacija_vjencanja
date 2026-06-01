@@ -82,6 +82,7 @@ export function LoginForm({
                   <FieldLabel htmlFor="name">Full name</FieldLabel>
                   <Input
                     id="name"
+                    name="name"
                     type="text"
                     placeholder="Ada Lovelace"
                     value={name}
@@ -94,6 +95,7 @@ export function LoginForm({
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="you@example.com"
                   value={email}
@@ -105,6 +107,7 @@ export function LoginForm({
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
