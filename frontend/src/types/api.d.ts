@@ -2078,6 +2078,73 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/weddings/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateWeddingStatusRequest"];
+                    "text/json": components["schemas"]["UpdateWeddingStatusRequest"];
+                    "application/*+json": components["schemas"]["UpdateWeddingStatusRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiResponseOfWeddingDto"];
+                        "application/json": components["schemas"]["ApiResponseOfWeddingDto"];
+                        "text/json": components["schemas"]["ApiResponseOfWeddingDto"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiResponseOfWeddingDto"];
+                        "application/json": components["schemas"]["ApiResponseOfWeddingDto"];
+                        "text/json": components["schemas"]["ApiResponseOfWeddingDto"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiResponseOfWeddingDto"];
+                        "application/json": components["schemas"]["ApiResponseOfWeddingDto"];
+                        "text/json": components["schemas"]["ApiResponseOfWeddingDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/wedding-templates": {
         parameters: {
             query?: never;
@@ -2746,6 +2813,9 @@ export interface components {
             templateId: number | null;
             notes: string | null;
             status: string;
+        };
+        UpdateWeddingStatusRequest: {
+            newStatus: string;
         };
         UpdateWeddingTemplateRequest: {
             name: string;

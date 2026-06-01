@@ -10,6 +10,14 @@ public sealed class WeddingService(AppDbContext db) : IWeddingService
 {
     private static readonly HashSet<string> ValidStatuses = ["PREPARATION", "CONFIRMED", "COMPLETED", "CANCELLED"];
 
+    private static readonly Dictionary<string, string[]> AllowedTransitions = new()
+    {
+        ["PREPARATION"] = ["CONFIRMED", "CANCELLED"],
+        ["CONFIRMED"]   = ["COMPLETED", "CANCELLED"],
+        ["COMPLETED"]   = [],
+        ["CANCELLED"]   = [],
+    };
+
     public async Task<ApiResponse<IEnumerable<WeddingListDto>>> GetAllAsync(string? status = null)
     {
         var query = db.Weddings
@@ -106,13 +114,48 @@ public sealed class WeddingService(AppDbContext db) : IWeddingService
         return ApiResponse<WeddingDto>.Ok(ToDto(entity));
     }
 
+    public async Task<ApiResponse<WeddingDto>> ChangeStatusAsync(int id, string newStatus)
+    {
+        if (string.IsNullOrWhiteSpace(newStatus))
+            return ApiResponse<WeddingDto>.Fail("New status is required.");
+
+        var target = newStatus.Trim().ToUpper();
+
+        if (!ValidStatuses.Contains(target))
+            return ApiResponse<WeddingDto>.Fail($"Invalid status. Valid values: {string.Join(", ", ValidStatuses)}.");
+
+        var entity = await db.Weddings
+            .Include(w => w.Template)
+            .FirstOrDefaultAsync(w => w.Id == id);
+
+        if (entity is null)
+            return ApiResponse<WeddingDto>.Fail($"Wedding with id {id} was not found.");
+
+        if (entity.Status == target)
+            return ApiResponse<WeddingDto>.Fail($"Wedding is already in status {target}.");
+
+        var allowed = AllowedTransitions.TryGetValue(entity.Status, out var next) ? next : [];
+        if (!allowed.Contains(target))
+            return ApiResponse<WeddingDto>.Fail($"Cannot change status from {entity.Status} to {target}.");
+
+        entity.Status = target;
+        entity.UpdatedAt = DateTime.UtcNow;
+        await db.SaveChangesAsync();
+
+        return ApiResponse<WeddingDto>.Ok(ToDto(entity));
+    }
+
     public async Task<ApiResponse<bool>> DeleteAsync(int id)
     {
         var entity = await db.Weddings.FindAsync(id);
         if (entity is null)
             return ApiResponse<bool>.Fail($"Wedding with id {id} was not found.");
 
-        db.Weddings.Remove(entity);
+        if (entity.Status == "CANCELLED")
+            return ApiResponse<bool>.Fail("Wedding is already cancelled.");
+
+        entity.Status = "CANCELLED";
+        entity.UpdatedAt = DateTime.UtcNow;
         await db.SaveChangesAsync();
 
         return ApiResponse<bool>.Ok(true);

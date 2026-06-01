@@ -9,5 +9,6 @@ public interface IWeddingService
     Task<ApiResponse<WeddingDto>> GetByIdAsync(int id);
     Task<ApiResponse<WeddingDto>> CreateAsync(CreateWeddingRequest request);
     Task<ApiResponse<WeddingDto>> UpdateAsync(int id, UpdateWeddingRequest request);
+    Task<ApiResponse<WeddingDto>> ChangeStatusAsync(int id, string newStatus);
     Task<ApiResponse<bool>> DeleteAsync(int id);
 }

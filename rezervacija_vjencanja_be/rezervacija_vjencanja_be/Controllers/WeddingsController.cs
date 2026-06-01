@@ -50,6 +50,18 @@ public sealed class WeddingsController(IWeddingService service) : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("{id:int}/status")]
+    [ProducesResponseType(typeof(ApiResponse<WeddingDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<WeddingDto>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<WeddingDto>), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ChangeStatus(int id, [FromBody] UpdateWeddingStatusRequest request)
+    {
+        var result = await service.ChangeStatusAsync(id, request.NewStatus);
+        if (result.Error is not null)
+            return result.Error.Contains("not found") ? NotFound(result) : BadRequest(result);
+        return Ok(result);
+    }
+
     [HttpDelete("{id:int}")]
     [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status404NotFound)]
