@@ -116,6 +116,8 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
         <div className="flex items-center gap-2 px-4 h-12 border-b">
           <SearchIcon className="h-4 w-4 text-muted-foreground shrink-0" />
           <input
+            id="command-palette-search"
+            name="command-palette-search"
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}

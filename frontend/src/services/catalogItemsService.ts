@@ -10,6 +10,7 @@ const catalogItemsQueryOptions = (partnerId: number) =>
     queryOptions({
         queryKey: ["catalogItems", { partnerId }],
         queryFn: () => apiRequest<CatalogItemDto[]>(`/api/partners/${partnerId}/catalog-items`),
+        enabled: partnerId > 0,
     });
 
 export function useCatalogItems(partnerId: number) {
