@@ -1,11 +1,18 @@
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Infrastructure;
 using RezervacijaVjencanja.Data;
 using RezervacijaVjencanja.Middleware;
 using RezervacijaVjencanja.Services.CatalogItems;
+using RezervacijaVjencanja.Services.Documents;
 using RezervacijaVjencanja.Services.Partners;
 using RezervacijaVjencanja.Services.PartnerTypes;
 using RezervacijaVjencanja.Services.PricingRules;
+using RezervacijaVjencanja.Services.WeddingPartners;
+using RezervacijaVjencanja.Services.WeddingTemplates;
+using RezervacijaVjencanja.Services.Weddings;
 using Scalar.AspNetCore;
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +25,10 @@ builder.Services.AddScoped<IPartnerTypeService, PartnerTypeService>();
 builder.Services.AddScoped<IPartnerService, PartnerService>();
 builder.Services.AddScoped<ICatalogItemService, CatalogItemService>();
 builder.Services.AddScoped<IPricingRuleService, PricingRuleService>();
+builder.Services.AddScoped<IWeddingService, WeddingService>();
+builder.Services.AddScoped<IWeddingTemplateService, WeddingTemplateService>();
+builder.Services.AddScoped<IWeddingPartnerService, WeddingPartnerService>();
+builder.Services.AddScoped<IDocumentService, DocumentService>();
 
 // -- API
 builder.Services.AddControllers();

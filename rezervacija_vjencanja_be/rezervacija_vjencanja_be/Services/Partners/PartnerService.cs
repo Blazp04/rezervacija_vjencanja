@@ -13,7 +13,7 @@ public sealed class PartnerService(AppDbContext db) : IPartnerService
     {
         var query = db.Partners
             .AsNoTracking()
-            .Include(p => p.PartnerType)
+            .Where(p => p.IsActive)
             .AsQueryable();
 
         if (partnerTypeId.HasValue)
