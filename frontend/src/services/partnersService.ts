@@ -56,3 +56,12 @@ export function useDeletePartner() {
         meta: { successMessage: "Partner obrisan." },
     });
 }
+
+export function useClonePartner() {
+    return useMutation({
+        mutationFn: (id: number) =>
+            apiRequest<PartnerDto>(`/api/partners/${id}/clone`, { method: "POST" }),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["partners"] }),
+        meta: { successMessage: "Partner kloniran." },
+    });
+}

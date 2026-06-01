@@ -10,4 +10,5 @@ public interface IPartnerService
     Task<ApiResponse<PartnerDto>> CreateAsync(CreatePartnerRequest request);
     Task<ApiResponse<PartnerDto>> UpdateAsync(int id, UpdatePartnerRequest request);
     Task<ApiResponse<bool>> DeleteAsync(int id);
+    Task<ApiResponse<PartnerDto>> CloneAsync(int id);
 }
