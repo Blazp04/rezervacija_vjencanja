@@ -24,16 +24,16 @@ export default function SettingsScreen() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid gap-2">
-            <Label>Naziv</Label>
-            <Input />
+            <Label htmlFor="company-name">Naziv</Label>
+            <Input id="company-name" name="company-name" />
           </div>
           <div className="grid gap-2">
-            <Label>OIB</Label>
-            <Input />
+            <Label htmlFor="company-oib">OIB</Label>
+            <Input id="company-oib" name="company-oib" />
           </div>
           <div className="grid gap-2">
-            <Label>Adresa</Label>
-            <Input />
+            <Label htmlFor="company-address">Adresa</Label>
+            <Input id="company-address" name="company-address" />
           </div>
           <Button className="w-fit" disabled>Spremi</Button>
         </CardContent>
