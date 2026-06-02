@@ -40,6 +40,10 @@ export interface UpdateWeddingRequest {
     status: string;
 }
 
+export interface UpdateWeddingStatusRequest {
+    newStatus: string;
+}
+
 const weddingsQueryOptions = (status?: string) =>
     queryOptions({
         queryKey: ["weddings", { status }],
@@ -85,11 +89,26 @@ export function useUpdateWedding() {
     });
 }
 
+export function useChangeWeddingStatus() {
+    return useMutation({
+        mutationFn: ({ id, newStatus }: { id: number; newStatus: string }) =>
+            apiRequest<WeddingDto>(`/api/weddings/${id}/status`, {
+                method: "POST",
+                data: { newStatus },
+            }),
+        onSuccess: (_data, { id }) => {
+            queryClient.invalidateQueries({ queryKey: ["weddings"] });
+            queryClient.invalidateQueries({ queryKey: ["weddings", id] });
+        },
+        meta: { successMessage: "Status promijenjen." },
+    });
+}
+
 export function useDeleteWedding() {
     return useMutation({
         mutationFn: (id: number) =>
             apiRequest<boolean>(`/api/weddings/${id}`, { method: "DELETE" }),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ["weddings"] }),
-        meta: { successMessage: "Vjenčanje obrisano." },
+        meta: { successMessage: "Vjenčanje otkazano." },
     });
 }

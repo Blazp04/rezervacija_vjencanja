@@ -12,27 +12,8 @@ import {
 } from "@/components/ui/select"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { useCreateWedding } from "@/services/weddingsService"
+import { useWeddingTemplates } from "@/services/weddingTemplatesService"
 import { useWorkspaceNavigate } from "@/routes/App/AppLayout/useWorkspaceNavigate"
-
-// We'll fetch templates inline
-import { useQuery } from "@tanstack/react-query"
-import { apiRequest } from "@/services/apiClient"
-
-interface WeddingTemplateListDto {
-    id: number
-    name: string
-    description: string | null
-}
-
-function useWeddingTemplates() {
-    return useQuery({
-        queryKey: ["weddingTemplates"],
-        queryFn: () => apiRequest<WeddingTemplateListDto[]>("/api/wedding-templates"),
-        retry: false,
-        // Templates endpoint may not be implemented yet
-        staleTime: Infinity,
-    })
-}
 
 interface Props {
     open: boolean
