@@ -58,9 +58,10 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// -- Auto-migrate and seed on startup
-using (var scope = app.Services.CreateScope())
+// -- Auto-migrate and seed on startup (skip in test environment)
+if (!app.Environment.IsEnvironment("Testing"))
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
     await DbSeeder.SeedAsync(db);
@@ -81,3 +82,6 @@ app.MapScalarApiReference(options =>
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+// Expose Program for WebApplicationFactory in test projects
+public partial class Program { }
