@@ -814,6 +814,18 @@ function CsvImportModal({ partnerId, open, onOpenChange, onSuccess }: CsvImportM
     const [isLoading, setIsLoading] = useState(false)
     const [totalRows, setTotalRows] = useState<number | null>(null)
     const [importResult, setImportResult] = useState<{ imported: number; skipped: number; skippedRows: Array<{ rowNumber: number; reason: string }> } | null>(null)
+    const [isDragOver, setIsDragOver] = useState(false)
+
+    function handleDrop(e: React.DragEvent<HTMLDivElement>) {
+        e.preventDefault()
+        setIsDragOver(false)
+        const dropped = e.dataTransfer.files?.[0]
+        if (dropped && dropped.name.endsWith(".csv")) {
+            setFile(dropped)
+        } else {
+            toast.error("Molimo odaberite CSV datoteku.")
+        }
+    }
 
     function reset() {
         setStep("upload")
@@ -899,14 +911,45 @@ function CsvImportModal({ partnerId, open, onOpenChange, onSuccess }: CsvImportM
 
                 {step === "upload" && (
                     <div className="space-y-4">
-                        <Field>
-                            <Label>CSV datoteka</Label>
-                            <Input
+                        {/* Drag & drop zone */}
+                        <div
+                            onDragOver={(e) => { e.preventDefault(); setIsDragOver(true) }}
+                            onDragEnter={(e) => { e.preventDefault(); setIsDragOver(true) }}
+                            onDragLeave={() => setIsDragOver(false)}
+                            onDrop={handleDrop}
+                            className={[
+                                "relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors cursor-pointer",
+                                isDragOver
+                                    ? "border-primary bg-primary/5"
+                                    : file
+                                        ? "border-green-500 bg-green-50 dark:bg-green-950/20"
+                                        : "border-muted-foreground/25 hover:border-muted-foreground/50",
+                            ].join(" ")}
+                            onClick={() => document.getElementById("csv-file-input")?.click()}
+                        >
+                            <UploadIcon className={["h-8 w-8", file ? "text-green-600" : "text-muted-foreground"].join(" ")} />
+                            {file ? (
+                                <>
+                                    <p className="text-sm font-medium text-green-700 dark:text-green-400">{file.name}</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {(file.size / 1024).toFixed(1)} KB — kliknite za zamjenu
+                                    </p>
+                                </>
+                            ) : (
+                                <>
+                                    <p className="text-sm font-medium">Povucite CSV ovdje ili kliknite za odabir</p>
+                                    <p className="text-xs text-muted-foreground">Podržane datoteke: .csv</p>
+                                </>
+                            )}
+                            <input
+                                id="csv-file-input"
                                 type="file"
                                 accept=".csv"
+                                className="sr-only"
                                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                             />
-                        </Field>
+                        </div>
+
                         <Button variant="link" size="sm" className="p-0 text-xs" onClick={downloadCsvTemplate}>
                             Preuzmi predložak CSV-a
                         </Button>

@@ -8,6 +8,14 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
+  <!-- Exclude test project files from main project compilation -->
+  <ItemGroup>
+    <Compile Remove="rezervacija_vjencanja_be.Tests\**" />
+    <Content Remove="rezervacija_vjencanja_be.Tests\**" />
+    <EmbeddedResource Remove="rezervacija_vjencanja_be.Tests\**" />
+    <None Remove="rezervacija_vjencanja_be.Tests\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.12" />
