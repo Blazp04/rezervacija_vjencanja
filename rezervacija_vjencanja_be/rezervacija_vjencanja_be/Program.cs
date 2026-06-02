@@ -37,25 +37,33 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // -- CORS (React dev server)
+// builder.Services.AddCors(options =>
+// {
+//     options.AddPolicy("ReactApp", policy =>
+//         policy.SetIsOriginAllowed(origin =>
+//         {
+//             var uri = new Uri(origin);
+//             return uri.Host == "localhost";
+//         })
+//         .AllowAnyHeader()
+//         .AllowAnyMethod());
+// });
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactApp", policy =>
-        policy.SetIsOriginAllowed(origin =>
-        {
-            var uri = new Uri(origin);
-            return uri.Host == "localhost";
-        })
-        .AllowAnyHeader()
-        .AllowAnyMethod());
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod());
 });
 
 var app = builder.Build();
 
-// -- Auto-migrate on startup
+// -- Auto-migrate and seed on startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
+    await DbSeeder.SeedAsync(db);
 }
 
 // -- Middleware pipeline

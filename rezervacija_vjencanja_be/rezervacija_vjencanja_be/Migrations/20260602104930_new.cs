@@ -3,34 +3,52 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace rezervacija_vjencanja_be.Data.Migrations
+namespace rezervacija_vjencanja_be.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAllDomainTables : Migration
+    public partial class @new : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Code",
-                table: "PartnerTypes",
-                type: "nvarchar(50)",
-                maxLength: 50,
-                nullable: false,
-                defaultValue: "");
+            migrationBuilder.CreateTable(
+                name: "PartnerTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: ""),
+                    HasBooking = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    FieldSchema = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PartnerTypes", x => x.Id);
+                    table.CheckConstraint("CHK_PartnerTypes_JSON", "FieldSchema IS NULL OR ISJSON(FieldSchema) = 1");
+                });
 
-            migrationBuilder.AddColumn<DateTime>(
-                name: "CreatedAt",
-                table: "PartnerTypes",
-                type: "datetime2",
-                nullable: false,
-                defaultValueSql: "GETDATE()");
-
-            migrationBuilder.AddColumn<string>(
-                name: "FieldSchema",
-                table: "PartnerTypes",
-                type: "nvarchar(max)",
-                nullable: true);
+            migrationBuilder.CreateTable(
+                name: "WeddingTemplates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RequiredPartnerTypes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DefaultNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActivityOrder = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WeddingTemplates", x => x.Id);
+                    table.CheckConstraint("CHK_WeddingTemplates_ActivityOrder_JSON", "ActivityOrder IS NULL OR ISJSON(ActivityOrder) = 1");
+                    table.CheckConstraint("CHK_WeddingTemplates_PartnerTypes_JSON", "RequiredPartnerTypes IS NULL OR ISJSON(RequiredPartnerTypes) = 1");
+                });
 
             migrationBuilder.CreateTable(
                 name: "Partners",
@@ -65,24 +83,30 @@ namespace rezervacija_vjencanja_be.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WeddingTemplates",
+                name: "Weddings",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RequiredPartnerTypes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DefaultNotes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ActivityOrder = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    TemplateId = table.Column<int>(type: "int", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "PREPARATION"),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WeddingTemplates", x => x.Id);
-                    table.CheckConstraint("CHK_WeddingTemplates_ActivityOrder_JSON", "ActivityOrder IS NULL OR ISJSON(ActivityOrder) = 1");
-                    table.CheckConstraint("CHK_WeddingTemplates_PartnerTypes_JSON", "RequiredPartnerTypes IS NULL OR ISJSON(RequiredPartnerTypes) = 1");
+                    table.PrimaryKey("PK_Weddings", x => x.Id);
+                    table.CheckConstraint("CHK_Weddings_Status", "Status IN ('PREPARATION', 'CONFIRMED', 'COMPLETED', 'CANCELLED')");
+                    table.ForeignKey(
+                        name: "FK_Weddings_WeddingTemplates_TemplateId",
+                        column: x => x.TemplateId,
+                        principalTable: "WeddingTemplates",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -137,33 +161,6 @@ namespace rezervacija_vjencanja_be.Data.Migrations
                         principalTable: "Partners",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Weddings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    TemplateId = table.Column<int>(type: "int", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "PREPARATION"),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Weddings", x => x.Id);
-                    table.CheckConstraint("CHK_Weddings_Status", "Status IN ('PREPARATION', 'CONFIRMED', 'COMPLETED', 'CANCELLED')");
-                    table.ForeignKey(
-                        name: "FK_Weddings_WeddingTemplates_TemplateId",
-                        column: x => x.TemplateId,
-                        principalTable: "WeddingTemplates",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -276,66 +273,6 @@ namespace rezervacija_vjencanja_be.Data.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 1,
-                columns: new[] { "Code", "CreatedAt", "FieldSchema", "Name" },
-                values: new object[] { "BAND", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Bend / DJ" });
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 2,
-                columns: new[] { "Code", "CreatedAt", "FieldSchema", "Name" },
-                values: new object[] { "FLORIST", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Cvjećar" });
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 3,
-                columns: new[] { "Code", "CreatedAt", "FieldSchema", "Name" },
-                values: new object[] { "PASTRY", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Slastičar" });
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 4,
-                columns: new[] { "Code", "CreatedAt", "FieldSchema", "Name" },
-                values: new object[] { "PHOTOGRAPHER", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Fotograf / Snimatelj" });
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 5,
-                columns: new[] { "Code", "CreatedAt", "FieldSchema", "Name" },
-                values: new object[] { "VENUE", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Sala / Dvorana" });
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 6,
-                columns: new[] { "Code", "CreatedAt", "FieldSchema", "Name" },
-                values: new object[] { "CATERING", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Catering" });
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 7,
-                columns: new[] { "Code", "CreatedAt", "FieldSchema", "Name" },
-                values: new object[] { "GENERIC", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), null, "Ostalo" });
-
-            migrationBuilder.CreateIndex(
-                name: "UQ_PartnerTypes_Code",
-                table: "PartnerTypes",
-                column: "Code",
-                unique: true);
-
-            migrationBuilder.AddCheckConstraint(
-                name: "CHK_PartnerTypes_JSON",
-                table: "PartnerTypes",
-                sql: "FieldSchema IS NULL OR ISJSON(FieldSchema) = 1");
-
             migrationBuilder.CreateIndex(
                 name: "IX_BandMembers_PartnerId",
                 table: "BandMembers",
@@ -386,6 +323,18 @@ namespace rezervacija_vjencanja_be.Data.Migrations
                 name: "IX_Partners_PartnerTypeId",
                 table: "Partners",
                 column: "PartnerTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PartnerTypes_Name",
+                table: "PartnerTypes",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "UQ_PartnerTypes_Code",
+                table: "PartnerTypes",
+                column: "Code",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_PricingRules_CatalogItemId",
@@ -460,74 +409,8 @@ namespace rezervacija_vjencanja_be.Data.Migrations
             migrationBuilder.DropTable(
                 name: "WeddingTemplates");
 
-            migrationBuilder.DropIndex(
-                name: "UQ_PartnerTypes_Code",
-                table: "PartnerTypes");
-
-            migrationBuilder.DropCheckConstraint(
-                name: "CHK_PartnerTypes_JSON",
-                table: "PartnerTypes");
-
-            migrationBuilder.DropColumn(
-                name: "Code",
-                table: "PartnerTypes");
-
-            migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                table: "PartnerTypes");
-
-            migrationBuilder.DropColumn(
-                name: "FieldSchema",
-                table: "PartnerTypes");
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 1,
-                column: "Name",
-                value: "BAND");
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 2,
-                column: "Name",
-                value: "FLORIST");
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 3,
-                column: "Name",
-                value: "PASTRY");
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 4,
-                column: "Name",
-                value: "PHOTOGRAPHER");
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 5,
-                column: "Name",
-                value: "VENUE");
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 6,
-                column: "Name",
-                value: "CATERING");
-
-            migrationBuilder.UpdateData(
-                table: "PartnerTypes",
-                keyColumn: "Id",
-                keyValue: 7,
-                column: "Name",
-                value: "GENERIC");
+            migrationBuilder.DropTable(
+                name: "PartnerTypes");
         }
     }
 }

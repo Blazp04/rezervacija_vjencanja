@@ -8,7 +8,7 @@ using RezervacijaVjencanja.Data;
 
 #nullable disable
 
-namespace rezervacija_vjencanja_be.Data.Migrations
+namespace rezervacija_vjencanja_be.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -182,58 +182,6 @@ namespace rezervacija_vjencanja_be.Data.Migrations
 
                             t.HasCheckConstraint("CHK_Partners_ExtraFields_JSON", "ExtraFields IS NULL OR ISJSON(ExtraFields) = 1");
                         });
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CommissionPercent = 15m,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            Name = "Luminous Band",
-                            PartnerTypeId = 1,
-                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CommissionPercent = 12m,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            Name = "DJ Stefan",
-                            PartnerTypeId = 1,
-                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CommissionPercent = 10m,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            Name = "Cvjetni Raj",
-                            PartnerTypeId = 2,
-                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CommissionPercent = 8m,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            Name = "Slastica Marija",
-                            PartnerTypeId = 3,
-                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CommissionPercent = 20m,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            Name = "FotoStudio Plus",
-                            PartnerTypeId = 4,
-                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
-                        });
                 });
 
             modelBuilder.Entity("RezervacijaVjencanja.Entities.PartnerCatalogItem", b =>
@@ -306,140 +254,6 @@ namespace rezervacija_vjencanja_be.Data.Migrations
 
                             t.HasCheckConstraint("CHK_PartnerCatalogItems_Metadata", "Metadata IS NULL OR ISJSON(Metadata) = 1");
                         });
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BasePrice = 800m,
-                            Category = "Bend",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "4-satna svirka",
-                            PartnerId = 1,
-                            SortOrder = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BasePrice = 1200m,
-                            Category = "Bend",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "6-satna svirka",
-                            PartnerId = 1,
-                            SortOrder = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BasePrice = 500m,
-                            Category = "DJ",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "DJ za plesnu muziku",
-                            PartnerId = 1,
-                            SortOrder = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            BasePrice = 600m,
-                            Category = "DJ",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "DJ svirka (4h)",
-                            PartnerId = 2,
-                            SortOrder = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BasePrice = 1000m,
-                            Category = "DJ",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "DJ svirka (8h)",
-                            PartnerId = 2,
-                            SortOrder = 2
-                        },
-                        new
-                        {
-                            Id = 6,
-                            BasePrice = 1500m,
-                            Category = "Dekoracija",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "Dekoracija sale",
-                            PartnerId = 3,
-                            SortOrder = 1
-                        },
-                        new
-                        {
-                            Id = 7,
-                            BasePrice = 150m,
-                            Category = "Cvijeće",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "PRODUCT",
-                            Name = "Cvjetni aranžman za stol",
-                            PartnerId = 3,
-                            SortOrder = 2
-                        },
-                        new
-                        {
-                            Id = 8,
-                            BasePrice = 400m,
-                            Category = "Torte",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "Torta sa jagodama",
-                            PartnerId = 4,
-                            SortOrder = 1
-                        },
-                        new
-                        {
-                            Id = 9,
-                            BasePrice = 100m,
-                            Category = "Kolačići",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "PRODUCT",
-                            Name = "Kolačići (1kg)",
-                            PartnerId = 4,
-                            SortOrder = 2
-                        },
-                        new
-                        {
-                            Id = 10,
-                            BasePrice = 2000m,
-                            Category = "Fotografija",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "SERVICE",
-                            Name = "Fotografiranje (8h)",
-                            PartnerId = 5,
-                            SortOrder = 1
-                        },
-                        new
-                        {
-                            Id = 11,
-                            BasePrice = 500m,
-                            Category = "Proizvodi",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsActive = true,
-                            ItemType = "PRODUCT",
-                            Name = "Foto album (100 str)",
-                            PartnerId = 5,
-                            SortOrder = 2
-                        });
                 });
 
             modelBuilder.Entity("RezervacijaVjencanja.Entities.PartnerType", b =>
@@ -487,64 +301,6 @@ namespace rezervacija_vjencanja_be.Data.Migrations
                     b.ToTable("PartnerTypes", null, t =>
                         {
                             t.HasCheckConstraint("CHK_PartnerTypes_JSON", "FieldSchema IS NULL OR ISJSON(FieldSchema) = 1");
-                        });
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Code = "BAND",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = true,
-                            Name = "Bend / DJ"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Code = "FLORIST",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = false,
-                            Name = "Cvjećar"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Code = "PASTRY",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = false,
-                            Name = "Slastičar"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Code = "PHOTOGRAPHER",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = true,
-                            Name = "Fotograf / Snimatelj"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Code = "VENUE",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = true,
-                            Name = "Sala / Dvorana"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Code = "CATERING",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = false,
-                            Name = "Catering"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Code = "GENERIC",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = false,
-                            Name = "Ostalo"
                         });
                 });
 

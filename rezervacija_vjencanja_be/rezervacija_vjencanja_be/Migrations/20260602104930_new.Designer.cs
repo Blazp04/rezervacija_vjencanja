@@ -9,11 +9,11 @@ using RezervacijaVjencanja.Data;
 
 #nullable disable
 
-namespace rezervacija_vjencanja_be.Data.Migrations
+namespace rezervacija_vjencanja_be.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260506115541_AddAllDomainTables")]
-    partial class AddAllDomainTables
+    [Migration("20260602104930_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -304,64 +304,6 @@ namespace rezervacija_vjencanja_be.Data.Migrations
                     b.ToTable("PartnerTypes", null, t =>
                         {
                             t.HasCheckConstraint("CHK_PartnerTypes_JSON", "FieldSchema IS NULL OR ISJSON(FieldSchema) = 1");
-                        });
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Code = "BAND",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = true,
-                            Name = "Bend / DJ"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Code = "FLORIST",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = false,
-                            Name = "Cvjećar"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Code = "PASTRY",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = false,
-                            Name = "Slastičar"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Code = "PHOTOGRAPHER",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = true,
-                            Name = "Fotograf / Snimatelj"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Code = "VENUE",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = true,
-                            Name = "Sala / Dvorana"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Code = "CATERING",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = false,
-                            Name = "Catering"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Code = "GENERIC",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            HasBooking = false,
-                            Name = "Ostalo"
                         });
                 });
 

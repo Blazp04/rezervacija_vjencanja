@@ -35,16 +35,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
             entity.HasIndex(e => e.Name).IsUnique();
             entity.HasIndex(e => e.Code).IsUnique().HasDatabaseName("UQ_PartnerTypes_Code");
-
-            entity.HasData(
-                new PartnerType { Id = 1, Name = "Bend / DJ",            Code = "BAND",         HasBooking = true,  CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerType { Id = 2, Name = "Cvjećar",              Code = "FLORIST",      HasBooking = false, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerType { Id = 3, Name = "Slastičar",            Code = "PASTRY",       HasBooking = false, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerType { Id = 4, Name = "Fotograf / Snimatelj", Code = "PHOTOGRAPHER", HasBooking = true,  CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerType { Id = 5, Name = "Sala / Dvorana",       Code = "VENUE",        HasBooking = true,  CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerType { Id = 6, Name = "Catering",             Code = "CATERING",     HasBooking = false, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerType { Id = 7, Name = "Ostalo",               Code = "GENERIC",      HasBooking = false, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
-            );
         });
 
         // ── Partners ────────────────────────────────────────────────────────────
@@ -76,14 +66,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
 
             entity.HasIndex(e => e.PartnerTypeId).HasDatabaseName("IX_Partners_PartnerTypeId");
             entity.HasIndex(e => e.IsActive).HasDatabaseName("IX_Partners_IsActive");
-
-            entity.HasData(
-                new Partner { Id = 1, Name = "Luminous Band", PartnerTypeId = 1, CommissionPercent = 15m, IsActive = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new Partner { Id = 2, Name = "DJ Stefan", PartnerTypeId = 1, CommissionPercent = 12m, IsActive = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new Partner { Id = 3, Name = "Cvjetni Raj", PartnerTypeId = 2, CommissionPercent = 10m, IsActive = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new Partner { Id = 4, Name = "Slastica Marija", PartnerTypeId = 3, CommissionPercent = 8m, IsActive = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new Partner { Id = 5, Name = "FotoStudio Plus", PartnerTypeId = 4, CommissionPercent = 20m, IsActive = true, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc), UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
-            );
         });
 
         // ── PartnerCatalogItems ─────────────────────────────────────────────────
@@ -115,25 +97,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(e => e.PartnerId).HasDatabaseName("IX_PartnerCatalogItems_PartnerId");
             entity.HasIndex(e => e.ItemType).HasDatabaseName("IX_PartnerCatalogItems_ItemType");
             entity.HasIndex(e => e.IsActive).HasDatabaseName("IX_PartnerCatalogItems_IsActive");
-
-            entity.HasData(
-                // Luminous Band (Partner 1)
-                new PartnerCatalogItem { Id = 1, PartnerId = 1, Name = "4-satna svirka", Category = "Bend", ItemType = "SERVICE", BasePrice = 800m, IsActive = true, SortOrder = 1, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerCatalogItem { Id = 2, PartnerId = 1, Name = "6-satna svirka", Category = "Bend", ItemType = "SERVICE", BasePrice = 1200m, IsActive = true, SortOrder = 2, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerCatalogItem { Id = 3, PartnerId = 1, Name = "DJ za plesnu muziku", Category = "DJ", ItemType = "SERVICE", BasePrice = 500m, IsActive = true, SortOrder = 3, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                // DJ Stefan (Partner 2)
-                new PartnerCatalogItem { Id = 4, PartnerId = 2, Name = "DJ svirka (4h)", Category = "DJ", ItemType = "SERVICE", BasePrice = 600m, IsActive = true, SortOrder = 1, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerCatalogItem { Id = 5, PartnerId = 2, Name = "DJ svirka (8h)", Category = "DJ", ItemType = "SERVICE", BasePrice = 1000m, IsActive = true, SortOrder = 2, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                // Cvjetni Raj (Partner 3 - Florist)
-                new PartnerCatalogItem { Id = 6, PartnerId = 3, Name = "Dekoracija sale", Category = "Dekoracija", ItemType = "SERVICE", BasePrice = 1500m, IsActive = true, SortOrder = 1, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerCatalogItem { Id = 7, PartnerId = 3, Name = "Cvjetni aranžman za stol", Category = "Cvijeće", ItemType = "PRODUCT", BasePrice = 150m, IsActive = true, SortOrder = 2, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                // Slastica Marija (Partner 4 - Pastry)
-                new PartnerCatalogItem { Id = 8, PartnerId = 4, Name = "Torta sa jagodama", Category = "Torte", ItemType = "SERVICE", BasePrice = 400m, IsActive = true, SortOrder = 1, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerCatalogItem { Id = 9, PartnerId = 4, Name = "Kolačići (1kg)", Category = "Kolačići", ItemType = "PRODUCT", BasePrice = 100m, IsActive = true, SortOrder = 2, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                // FotoStudio Plus (Partner 5 - Photographer)
-                new PartnerCatalogItem { Id = 10, PartnerId = 5, Name = "Fotografiranje (8h)", Category = "Fotografija", ItemType = "SERVICE", BasePrice = 2000m, IsActive = true, SortOrder = 1, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
-                new PartnerCatalogItem { Id = 11, PartnerId = 5, Name = "Foto album (100 str)", Category = "Proizvodi", ItemType = "PRODUCT", BasePrice = 500m, IsActive = true, SortOrder = 2, CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
-            );
         });
 
         // ── PricingRules ────────────────────────────────────────────────────────
