@@ -5,12 +5,14 @@ import {
   CalendarIcon,
   FileTextIcon,
   SettingsIcon,
+  LayoutTemplateIcon,
   type LucideIcon,
 } from "lucide-react"
 import type { ComponentType } from "react"
 import DashboardScreen from "@/routes/App/DashboardPage"
 import WeddingsListScreen from "@/routes/App/WeddingsPage"
 import WeddingDetailScreen from "@/routes/App/WeddingDetailPage"
+import TemplatesListScreen from "@/routes/App/TemplatesPage"
 import PartnersListScreen from "@/routes/App/PartnersPage"
 import PartnerDetailScreen from "@/routes/App/PartnerDetailPage"
 import CalendarScreen from "@/routes/App/CalendarPage"
@@ -44,6 +46,12 @@ export const screens: ScreenRoute[] = [
     title: (p) => `Vjenčanje #${p.id}`,
     icon: HeartIcon,
     Component: WeddingDetailScreen,
+  },
+  {
+    pattern: /^\/templates$/,
+    title: "Predlošci",
+    icon: LayoutTemplateIcon,
+    Component: TemplatesListScreen,
   },
   {
     pattern: /^\/partners$/,
@@ -109,6 +117,7 @@ export const navItems: Array<{
 }> = [
     { title: "Dashboard", path: "/dashboard", icon: LayoutDashboardIcon },
     { title: "Vjenčanja", path: "/weddings", icon: HeartIcon },
+    { title: "Predlošci", path: "/templates", icon: LayoutTemplateIcon },
     { title: "Partneri", path: "/partners", icon: UsersIcon },
     { title: "Kalendar", path: "/calendar", icon: CalendarIcon },
     { title: "Izvještaji", path: "/reports", icon: FileTextIcon },

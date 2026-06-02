@@ -34,3 +34,6 @@ public sealed record UpdateWeddingRequest(
     int? TemplateId,
     string? Notes,
     string Status);
+
+public sealed record UpdateWeddingStatusRequest(
+    string NewStatus);

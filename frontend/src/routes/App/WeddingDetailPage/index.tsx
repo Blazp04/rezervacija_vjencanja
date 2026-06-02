@@ -20,7 +20,8 @@ import {
 import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { useWedding } from "@/services/weddingsService"
+import { useWedding, useChangeWeddingStatus } from "@/services/weddingsService"
+import { EditWeddingSheet } from "./EditWeddingSheet"
 import { usePartners } from "@/services/partnersService"
 import { useCatalogItems } from "@/services/catalogItemsService"
 import {
@@ -29,8 +30,6 @@ import {
     usePricing, downloadPdf, type WeddingPartnerDto
 } from "@/services/weddingPartnersService"
 import { toast } from "sonner"
-
-// ─── Status helpers ──────────────────────────────────────────────────────────
 
 const STATUS_LABELS: Record<string, string> = {
     PROPOSED: "Predložen",
@@ -61,8 +60,6 @@ function fmt(value: number | null | undefined): string {
     if (value == null) return "—"
     return value.toLocaleString("hr-HR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " KM"
 }
-
-// ─── Add Partner Dialog ──────────────────────────────────────────────────────
 
 interface AddPartnerDialogProps {
     weddingId: number
@@ -217,8 +214,6 @@ function AddPartnerDialog({ weddingId, open, onOpenChange }: AddPartnerDialogPro
     )
 }
 
-// ─── Edit Partner Dialog ─────────────────────────────────────────────────────
-
 interface EditPartnerDialogProps {
     weddingId: number
     wp: WeddingPartnerDto
@@ -337,8 +332,6 @@ function EditPartnerDialog({ weddingId, wp, open, onOpenChange }: EditPartnerDia
     )
 }
 
-// ─── Confirm Partner Dialog ──────────────────────────────────────────────────
-
 interface ConfirmDialogProps {
     weddingId: number
     wp: WeddingPartnerDto
@@ -391,7 +384,6 @@ function ConfirmPartnerDialog({ weddingId, wp, weddingDateTime, open, onOpenChan
             if (status === 409) {
                 setConflictError(msg)
             }
-            // Other errors handled by global toast
         }
     }
 
@@ -482,8 +474,6 @@ function ConfirmPartnerDialog({ weddingId, wp, weddingDateTime, open, onOpenChan
     )
 }
 
-// ─── Status Badge (clickable) ─────────────────────────────────────────────────
-
 interface StatusBadgeProps {
     wp: WeddingPartnerDto
     weddingId: number
@@ -540,8 +530,6 @@ function StatusBadgeDropdown({ wp, weddingId, weddingDateTime: _dt, onConfirmCli
         </DropdownMenu>
     )
 }
-
-// ─── Partners Tab ─────────────────────────────────────────────────────────────
 
 interface PartnersTabProps {
     weddingId: number
@@ -688,10 +676,8 @@ function PartnersTab({ weddingId, weddingDateTime }: PartnersTabProps) {
                 </div>
             )}
 
-            {/* Add Partner Dialog */}
             <AddPartnerDialog weddingId={weddingId} open={addOpen} onOpenChange={setAddOpen} />
 
-            {/* Edit Partner Dialog */}
             {editWp && (
                 <EditPartnerDialog
                     weddingId={weddingId}
@@ -701,7 +687,6 @@ function PartnersTab({ weddingId, weddingDateTime }: PartnersTabProps) {
                 />
             )}
 
-            {/* Confirm Partner Dialog */}
             {confirmWp && (
                 <ConfirmPartnerDialog
                     weddingId={weddingId}
@@ -712,7 +697,6 @@ function PartnersTab({ weddingId, weddingDateTime }: PartnersTabProps) {
                 />
             )}
 
-            {/* Remove confirmation dialog */}
             <Dialog open={removeWpId !== null} onOpenChange={open => { if (!open) setRemoveWpId(null) }}>
                 <DialogContent className="sm:max-w-sm">
                     <DialogHeader>
@@ -732,8 +716,6 @@ function PartnersTab({ weddingId, weddingDateTime }: PartnersTabProps) {
         </div>
     )
 }
-
-// ─── Documents Tab ────────────────────────────────────────────────────────────
 
 interface DocumentsTabProps {
     weddingId: number
@@ -847,8 +829,6 @@ function DocumentsTab({ weddingId, weddingName, weddingDateTime }: DocumentsTabP
     )
 }
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
-
 const WEDDING_STATUS_LABELS: Record<string, string> = {
     PREPARATION: "Priprema",
     CONFIRMED: "Potvrđeno",
@@ -856,9 +836,17 @@ const WEDDING_STATUS_LABELS: Record<string, string> = {
     CANCELLED: "Otkazano",
 }
 
+function getWeddingTransitions(current: string): string[] {
+    if (current === "PREPARATION") return ["CONFIRMED", "CANCELLED"]
+    if (current === "CONFIRMED") return ["COMPLETED", "CANCELLED"]
+    return []
+}
+
 export default function WeddingDetailScreen({ params }: { params: Record<string, string> }) {
     const id = Number(params.id)
     const { data: wedding, isLoading, isError } = useWedding(id)
+    const changeStatus = useChangeWeddingStatus()
+    const [editOpen, setEditOpen] = useState(false)
 
     if (isLoading) {
         return (
@@ -884,7 +872,6 @@ export default function WeddingDetailScreen({ params }: { params: Record<string,
 
     return (
         <div className="flex flex-col h-full overflow-hidden">
-            {/* Header */}
             <div className="px-6 pt-6 pb-4 border-b">
                 <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
@@ -897,15 +884,41 @@ export default function WeddingDetailScreen({ params }: { params: Record<string,
                             {wedding.location && ` · ${wedding.location}`}
                         </p>
                     </div>
-                    <Badge variant={wedding.status === "CONFIRMED" ? "default" : wedding.status === "CANCELLED" ? "destructive" : "secondary"}>
-                        {WEDDING_STATUS_LABELS[wedding.status] ?? wedding.status}
-                    </Badge>
+                    {(() => {
+                        const transitions = getWeddingTransitions(wedding.status)
+                        const badge = (
+                            <Badge variant={wedding.status === "CONFIRMED" ? "default" : wedding.status === "CANCELLED" ? "destructive" : "secondary"}>
+                                {WEDDING_STATUS_LABELS[wedding.status] ?? wedding.status}
+                            </Badge>
+                        )
+                        if (transitions.length === 0) return badge
+                        return (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="flex items-center gap-1 focus:outline-none">
+                                        {badge}
+                                        <ChevronDownIcon className="h-4 w-4 text-muted-foreground" />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    {transitions.map((target) => (
+                                        <DropdownMenuItem
+                                            key={target}
+                                            disabled={changeStatus.isPending}
+                                            onClick={() => changeStatus.mutate({ id, newStatus: target })}
+                                        >
+                                            → {WEDDING_STATUS_LABELS[target] ?? target}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        )
+                    })()}
                 </div>
             </div>
 
-            {/* Tabs */}
             <div className="flex-1 min-h-0 overflow-y-auto">
-                <Tabs defaultValue="partners" className="flex flex-col h-full">
+                <Tabs defaultValue="info" className="flex flex-col h-full">
                     <div className="px-6 pt-4 border-b">
                         <TabsList variant="line" className="w-full justify-start">
                             <TabsTrigger value="info">Podaci</TabsTrigger>
@@ -916,6 +929,11 @@ export default function WeddingDetailScreen({ params }: { params: Record<string,
 
                     <div className="flex-1 overflow-y-auto px-6 py-5">
                         <TabsContent value="info">
+                            <div className="mb-4">
+                                <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
+                                    <PencilIcon className="h-4 w-4" /> Uredi vjenčanje
+                                </Button>
+                            </div>
                             <div className="grid gap-4 lg:grid-cols-2 max-w-2xl">
                                 <Card>
                                     <CardHeader>
@@ -961,6 +979,8 @@ export default function WeddingDetailScreen({ params }: { params: Record<string,
                     </div>
                 </Tabs>
             </div>
+
+            <EditWeddingSheet wedding={wedding} open={editOpen} onOpenChange={setEditOpen} />
         </div>
     )
 }
