@@ -10,6 +10,7 @@ using RezervacijaVjencanja.Services.PartnerTypes;
 using RezervacijaVjencanja.Services.PricingRules;
 using RezervacijaVjencanja.Services.WeddingPartners;
 using RezervacijaVjencanja.Services.WeddingTemplates;
+using RezervacijaVjencanja.Services.Settings;
 using RezervacijaVjencanja.Services.Weddings;
 using Scalar.AspNetCore;
 
@@ -31,23 +32,13 @@ builder.Services.AddScoped<IWeddingService, WeddingService>();
 builder.Services.AddScoped<IWeddingTemplateService, WeddingTemplateService>();
 builder.Services.AddScoped<IWeddingPartnerService, WeddingPartnerService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<ISettingsService, SettingsService>();
 
 // -- API
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 // -- CORS (React dev server)
-// builder.Services.AddCors(options =>
-// {
-//     options.AddPolicy("ReactApp", policy =>
-//         policy.SetIsOriginAllowed(origin =>
-//         {
-//             var uri = new Uri(origin);
-//             return uri.Host == "localhost";
-//         })
-//         .AllowAnyHeader()
-//         .AllowAnyMethod());
-// });
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactApp", policy =>

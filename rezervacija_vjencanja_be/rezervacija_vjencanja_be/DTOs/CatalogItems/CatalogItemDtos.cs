@@ -8,6 +8,8 @@ public sealed record CatalogItemDto(
     string? Description,
     string ItemType,
     decimal? BasePrice,
+    decimal? PriceMin,
+    decimal? PriceMax,
     string? Metadata,
     bool IsActive,
     int SortOrder);
@@ -19,6 +21,8 @@ public sealed record CreateCatalogItemRequest(
     string? Description,
     string ItemType,
     decimal? BasePrice,
+    decimal? PriceMin,
+    decimal? PriceMax,
     string? Metadata);
 
 public sealed record UpdateCatalogItemRequest(
@@ -27,6 +31,8 @@ public sealed record UpdateCatalogItemRequest(
     string? Description,
     string ItemType,
     decimal? BasePrice,
+    decimal? PriceMin,
+    decimal? PriceMax,
     string? Metadata,
     bool IsActive,
     int SortOrder);

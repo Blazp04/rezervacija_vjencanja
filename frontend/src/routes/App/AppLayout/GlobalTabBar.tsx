@@ -32,7 +32,7 @@ export function GlobalTabBar({ onOpenPalette }: GlobalTabBarProps) {
   return (
     <div
       role="tablist"
-      className="flex items-center h-10 bg-card border-b border-border shrink-0 px-1"
+      className="flex items-center h-10 bg-card border-b border-border shrink-0 px-1 min-w-0 overflow-hidden"
     >
       <SidebarTrigger className="h-8 w-8 shrink-0 mx-1" />
       <Separator orientation="vertical" className="h-5 mr-1 shrink-0" />
@@ -55,7 +55,7 @@ export function GlobalTabBar({ onOpenPalette }: GlobalTabBarProps) {
                 <button
                   type="button"
                   onClick={onOpenPalette}
-                  className="flex items-center justify-center h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors shrink-0"
+                  className="flex items-center justify-center h-10 w-10 text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors shrink-0 cursor-pointer"
                   aria-label="Otvori novi tab"
                 >
                   <PlusIcon className="h-4 w-4" />

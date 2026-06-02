@@ -1,11 +1,9 @@
 import * as React from "react"
 import { HeartIcon } from "lucide-react"
 import { NavMain } from "@/components/NavMain"
-import { NavUser } from "@/components/NavUser"
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -15,9 +13,8 @@ import {
 import { navItems } from "@/routes/App/AppLayout/registry"
 
 export function AppSidebar({
-  user,
   ...props
-}: React.ComponentProps<typeof Sidebar> & { user: { name: string; email: string } }) {
+}: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -38,9 +35,6 @@ export function AppSidebar({
       <SidebarContent>
         <NavMain items={navItems} />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={{ ...user, avatar: "" }} />
-      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )

@@ -148,7 +148,7 @@ export const TabItem = memo(function TabItem({ tab, panel, variant = "global", i
               e.stopPropagation()
               closeTab(tab.id)
             }}
-            className="rounded-sm p-0.5 hover:bg-accent text-muted-foreground hover:text-foreground transition"
+            className="rounded-sm p-0.5 hover:bg-accent text-muted-foreground hover:text-foreground transition cursor-pointer"
             aria-label={`Zatvori tab ${tab.title}`}
           >
             <XIcon className={isCompact ? "h-3 w-3" : "h-3.5 w-3.5"} />

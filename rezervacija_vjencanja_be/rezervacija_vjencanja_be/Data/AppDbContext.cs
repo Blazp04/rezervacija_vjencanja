@@ -14,6 +14,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     public DbSet<Wedding> Weddings => Set<Wedding>();
     public DbSet<WeddingPartner> WeddingPartners => Set<WeddingPartner>();
     public DbSet<Booking> Bookings => Set<Booking>();
+    public DbSet<AgencySettings> AgencySettings => Set<AgencySettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -73,9 +74,12 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         {
             entity.ToTable("PartnerCatalogItems", t =>
             {
-                t.HasCheckConstraint("CHK_PartnerCatalogItems_ItemType",  "ItemType IN ('SERVICE', 'PRODUCT', 'SONG')");
-                t.HasCheckConstraint("CHK_PartnerCatalogItems_BasePrice", "BasePrice IS NULL OR BasePrice >= 0");
-                t.HasCheckConstraint("CHK_PartnerCatalogItems_Metadata",  "Metadata IS NULL OR ISJSON(Metadata) = 1");
+                t.HasCheckConstraint("CHK_PartnerCatalogItems_ItemType",    "ItemType IN ('SERVICE', 'PRODUCT', 'SONG')");
+                t.HasCheckConstraint("CHK_PartnerCatalogItems_BasePrice",  "BasePrice IS NULL OR BasePrice >= 0");
+                t.HasCheckConstraint("CHK_PartnerCatalogItems_PriceMin",   "PriceMin IS NULL OR PriceMin >= 0");
+                t.HasCheckConstraint("CHK_PartnerCatalogItems_PriceMax",   "PriceMax IS NULL OR PriceMax >= 0");
+                t.HasCheckConstraint("CHK_PartnerCatalogItems_PriceRange", "PriceMin IS NULL OR PriceMax IS NULL OR PriceMin <= PriceMax");
+                t.HasCheckConstraint("CHK_PartnerCatalogItems_Metadata",   "Metadata IS NULL OR ISJSON(Metadata) = 1");
             });
 
             entity.HasKey(e => e.Id);
@@ -84,6 +88,8 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.Property(e => e.Description).HasColumnType("nvarchar(max)");
             entity.Property(e => e.ItemType).IsRequired().HasMaxLength(20).HasDefaultValue("SERVICE");
             entity.Property(e => e.BasePrice).HasColumnType("decimal(10,2)");
+            entity.Property(e => e.PriceMin).HasColumnType("decimal(10,2)");
+            entity.Property(e => e.PriceMax).HasColumnType("decimal(10,2)");
             entity.Property(e => e.Metadata).HasColumnType("nvarchar(max)");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.SortOrder).HasDefaultValue(0);
@@ -251,6 +257,20 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(e => e.PartnerId).HasDatabaseName("IX_Bookings_PartnerId");
             entity.HasIndex(e => e.WeddingId).HasDatabaseName("IX_Bookings_WeddingId");
             entity.HasIndex(e => new { e.PartnerId, e.StartDateTime, e.EndDateTime }).HasDatabaseName("IX_Bookings_DateRange");
+        });
+
+        // ── AgencySettings ──────────────────────────────────────────────────────
+        modelBuilder.Entity<AgencySettings>(entity =>
+        {
+            entity.ToTable("AgencySettings");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedNever(); // always 1
+            entity.Property(e => e.CompanyName).IsRequired().HasMaxLength(200).HasDefaultValue(string.Empty);
+            entity.Property(e => e.Oib).HasMaxLength(20);
+            entity.Property(e => e.Address).HasMaxLength(500);
+            entity.Property(e => e.Phone).HasMaxLength(50);
+            entity.Property(e => e.Email).HasMaxLength(200);
+            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("GETDATE()");
         });
     }
 }

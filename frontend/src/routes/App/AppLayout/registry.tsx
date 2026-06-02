@@ -120,6 +120,5 @@ export const navItems: Array<{
     { title: "Predlošci", path: "/templates", icon: LayoutTemplateIcon },
     { title: "Partneri", path: "/partners", icon: UsersIcon },
     { title: "Kalendar", path: "/calendar", icon: CalendarIcon },
-    { title: "Izvještaji", path: "/reports", icon: FileTextIcon },
     { title: "Postavke", path: "/settings", icon: SettingsIcon },
   ]

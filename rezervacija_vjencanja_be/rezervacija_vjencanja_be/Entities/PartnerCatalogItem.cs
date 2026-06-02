@@ -9,6 +9,8 @@ public sealed class PartnerCatalogItem
     public string? Description { get; set; }
     public string ItemType { get; set; } = "SERVICE";
     public decimal? BasePrice { get; set; }
+    public decimal? PriceMin { get; set; }
+    public decimal? PriceMax { get; set; }
     public string? Metadata { get; set; }
     public bool IsActive { get; set; } = true;
     public int SortOrder { get; set; }

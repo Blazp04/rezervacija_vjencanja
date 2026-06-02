@@ -138,30 +138,27 @@ public sealed class DocumentService(AppDbContext db) : IDocumentService
 
         container.PaddingTop(20).Column(col =>
         {
-            // Table
+            // Table – klijentska faktura ne prikazuje proviziju
             col.Item().Table(table =>
             {
                 table.ColumnsDefinition(cols =>
                 {
-                    cols.RelativeColumn(3);   // Service
-                    cols.RelativeColumn(2.5f); // Partner
-                    cols.ConstantColumn(70);   // Unit price
-                    cols.ConstantColumn(55);   // Commission %
-                    cols.ConstantColumn(80);   // Client price
+                    cols.RelativeColumn(3.5f); // Usluga
+                    cols.RelativeColumn(3f);   // Partner
+                    cols.ConstantColumn(90);   // Iznos
                 });
 
                 // Header
                 table.Header(header =>
                 {
-                    void HeaderCell(string text) =>
+                    void HeaderCell(string text, bool right = false) =>
                         header.Cell().Background(Colors.BlueGrey.Darken3).Padding(6)
+                            .Element(c => right ? c.AlignRight() : c)
                             .Text(text).FontColor(Colors.White).FontSize(9).Bold();
 
                     HeaderCell("Usluga");
-                    HeaderCell("Partner");
-                    HeaderCell("Cijena");
-                    HeaderCell("Provizija");
-                    HeaderCell("Ukupno");
+                    HeaderCell("Izvršitelj");
+                    HeaderCell("Iznos (KM)", right: true);
                 });
 
                 foreach (var wp in partners)
@@ -170,32 +167,27 @@ public sealed class DocumentService(AppDbContext db) : IDocumentService
                     var clientPrice = wp.ActualPrice.Value + commissionAmount;
                     grandTotal += clientPrice;
 
-                    void DataCell(string text, bool right = false) =>
-                        table.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten2).Padding(5)
-                            .Element(c => right ? c.AlignRight() : c)
-                            .Text(text).FontSize(9);
+                    void DataCell(string text, bool right = false, bool bold = false)
+                    {
+                        var cell = table.Cell().BorderBottom(1).BorderColor(Colors.Grey.Lighten2).Padding(5)
+                            .Element(c => right ? c.AlignRight() : c);
+                        var t = cell.Text(text).FontSize(9);
+                        if (bold) t.Bold();
+                    }
 
                     DataCell(wp.CatalogItem?.Name ?? wp.Partner.PartnerType.Name);
                     DataCell(wp.Partner.Name);
-                    DataCell(wp.ActualPrice.Value.ToString("N2") + " KM", right: true);
-                    DataCell(wp.CommissionPercent!.Value.ToString("N1") + " %", right: true);
-                    DataCell(clientPrice.ToString("N2") + " KM", right: true);
+                    DataCell(clientPrice.ToString("N2") + " KM", right: true, bold: true);
                 }
             });
 
             // Total
-            var grandTotalText = $"UKUPNO ZA UPLATU:  {grandTotal:N2} KM";
-            col.Item().PaddingTop(12).Table(totalTable =>
+            col.Item().PaddingTop(16).BorderTop(2).BorderColor(Colors.BlueGrey.Darken2).PaddingTop(8).Row(row =>
             {
-                totalTable.ColumnsDefinition(c =>
-                {
-                    c.RelativeColumn();
-                    c.ConstantColumn(220);
-                });
-                totalTable.Cell().ColumnSpan(2).BorderTop(2).BorderColor(Colors.BlueGrey.Darken2).Height(2);
-                totalTable.Cell().PaddingTop(6);
-                totalTable.Cell().PaddingTop(6).AlignRight()
-                    .Text(grandTotalText).FontSize(13).Bold().FontColor(Colors.BlueGrey.Darken3);
+                row.RelativeItem();
+                row.ConstantItem(240).AlignRight()
+                    .Text($"UKUPNO ZA UPLATU: {grandTotal:N2} KM")
+                    .FontSize(13).Bold().FontColor(Colors.BlueGrey.Darken3);
             });
         });
     }

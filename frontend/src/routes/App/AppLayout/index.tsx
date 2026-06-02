@@ -5,9 +5,6 @@ import { WorkspaceShell } from "@/routes/App/AppLayout/WorkspaceShell"
 import { useWorkspaceStore } from "@/services/store"
 import { useWorkspaceNavigate } from "@/routes/App/AppLayout/useWorkspaceNavigate"
 
-// Auth disabled — mock user for sidebar
-const MOCK_USER = { name: "Test korisnik", email: "test@rezervacija.local" }
-
 export default function AdminLayout() {
   const tabsCount = useWorkspaceStore((s) => s.tabs.length)
   const navigate = useWorkspaceNavigate()
@@ -27,8 +24,8 @@ export default function AdminLayout() {
 
   return (
     <SidebarProvider>
-      <AppSidebar user={MOCK_USER} />
-      <SidebarInset className="flex flex-col h-svh">
+      <AppSidebar />
+      <SidebarInset className="flex flex-col h-svh overflow-hidden">
         <WorkspaceShell />
       </SidebarInset>
     </SidebarProvider>

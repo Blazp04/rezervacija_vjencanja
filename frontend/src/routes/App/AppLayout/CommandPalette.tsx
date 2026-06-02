@@ -5,6 +5,7 @@ import * as LucideIcons from "lucide-react"
 import { cn } from "@/utils/utils"
 import { navItems } from "./registry"
 import { useWorkspaceNavigate } from "./useWorkspaceNavigate"
+import { useWeddings } from "@/services/weddingsService"
 
 interface CommandPaletteProps {
   open: boolean
@@ -25,15 +26,6 @@ const baseItems: PaletteItem[] = navItems.map((n) => {
   return { title: n.title, path: n.path, icon: name, closeable: n.closeable }
 })
 
-// Demo wedding details for command palette
-const demoItems: PaletteItem[] = [
-  { title: "Vjenčanje #1042", path: "/weddings/1042", icon: "Heart", hint: "demo zapis" },
-  { title: "Vjenčanje #1043", path: "/weddings/1043", icon: "Heart", hint: "demo zapis" },
-  { title: "Vjenčanje #1044", path: "/weddings/1044", icon: "Heart", hint: "demo zapis" },
-]
-
-const ALL_ITEMS: PaletteItem[] = [...baseItems, ...demoItems]
-
 function getIcon(name: string) {
   const all = LucideIcons as unknown as Record<string, LucideIcons.LucideIcon>
   return all[`${name}Icon`] ?? all[name] ?? LucideIcons.FileTextIcon
@@ -44,17 +36,32 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const navigate = useWorkspaceNavigate()
+  const { data: weddings } = useWeddings()
+
+  const weddingItems: PaletteItem[] = useMemo(
+    () =>
+      (weddings ?? []).map((w) => ({
+        title: w.name,
+        path: `/weddings/${w.id}`,
+        icon: "Heart",
+        closeable: true,
+        hint: w.dateTime ? new Date(w.dateTime).toLocaleDateString("hr-HR") : undefined,
+      })),
+    [weddings],
+  )
+
+  const allItems = useMemo(() => [...baseItems, ...weddingItems], [weddingItems])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return ALL_ITEMS
-    return ALL_ITEMS.filter(
+    if (!q) return allItems
+    return allItems.filter(
       (it) =>
         it.title.toLowerCase().includes(q) ||
         it.path.toLowerCase().includes(q) ||
         (it.hint?.toLowerCase().includes(q) ?? false),
     )
-  }, [query])
+  }, [query, allItems])
 
   useEffect(() => {
     if (open) {
@@ -143,7 +150,7 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
                   onMouseEnter={() => setActiveIndex(idx)}
                   onClick={() => handleSelect(item)}
                   className={cn(
-                    "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-left transition-colors",
+                    "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-left transition-colors cursor-pointer",
                     isActive ? "bg-accent text-accent-foreground" : "text-foreground",
                   )}
                 >

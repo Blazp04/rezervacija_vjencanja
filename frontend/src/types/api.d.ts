@@ -1510,6 +1510,10 @@ export interface components {
             itemType: string;
             /** Format: double */
             basePrice: number | null;
+            /** Format: double */
+            priceMin: number | null;
+            /** Format: double */
+            priceMax: number | null;
             metadata: string | null;
             isActive: boolean;
             /** Format: int32 */
@@ -1526,6 +1530,10 @@ export interface components {
             itemType: string;
             /** Format: double */
             basePrice: number | null;
+            /** Format: double */
+            priceMin: number | null;
+            /** Format: double */
+            priceMax: number | null;
             metadata: string | null;
             isActive: boolean;
             /** Format: int32 */
@@ -1546,6 +1554,10 @@ export interface components {
             itemType: string;
             /** Format: double */
             basePrice: number | null;
+            /** Format: double */
+            priceMin: number | null;
+            /** Format: double */
+            priceMax: number | null;
             metadata: string | null;
         };
         CreatePartnerRequest: {
@@ -1695,6 +1707,10 @@ export interface components {
             itemType: string;
             /** Format: double */
             basePrice: number | null;
+            /** Format: double */
+            priceMin: number | null;
+            /** Format: double */
+            priceMax: number | null;
             metadata: string | null;
             isActive: boolean;
             /** Format: int32 */

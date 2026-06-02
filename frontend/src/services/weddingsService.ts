@@ -72,7 +72,10 @@ export function useCreateWedding() {
     return useMutation({
         mutationFn: (data: CreateWeddingRequest) =>
             apiRequest<WeddingDto>("/api/weddings", { method: "POST", data }),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ["weddings"] }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["weddings"] });
+            queryClient.invalidateQueries({ queryKey: ["calendar"] });
+        },
         meta: { successMessage: "Vjenčanje kreirano." },
     });
 }
@@ -84,6 +87,7 @@ export function useUpdateWedding() {
         onSuccess: (_data, { id }) => {
             queryClient.invalidateQueries({ queryKey: ["weddings"] });
             queryClient.invalidateQueries({ queryKey: ["weddings", id] });
+            queryClient.invalidateQueries({ queryKey: ["calendar"] });
         },
         meta: { successMessage: "Vjenčanje ažurirano." },
     });
@@ -99,6 +103,7 @@ export function useChangeWeddingStatus() {
         onSuccess: (_data, { id }) => {
             queryClient.invalidateQueries({ queryKey: ["weddings"] });
             queryClient.invalidateQueries({ queryKey: ["weddings", id] });
+            queryClient.invalidateQueries({ queryKey: ["calendar"] });
         },
         meta: { successMessage: "Status promijenjen." },
     });

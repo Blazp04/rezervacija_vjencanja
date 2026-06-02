@@ -152,7 +152,17 @@ function PricingRulesSection({ item }: { item: CatalogItemDto }) {
                         <p className="text-xs text-muted-foreground">
                             Osnovna cijena:{" "}
                             <span className="font-medium text-foreground">
-                                {item.basePrice.toLocaleString("hr-HR", { style: "currency", currency: "EUR" })}
+                                {item.basePrice.toFixed(2)} KM
+                            </span>
+                        </p>
+                    )}
+                    {(item.priceMin != null || item.priceMax != null) && (
+                        <p className="text-xs text-muted-foreground">
+                            Raspon:{" "}
+                            <span className="font-medium text-foreground">
+                                {item.priceMin != null ? `${item.priceMin.toFixed(2)} KM` : "—"}
+                                {" – "}
+                                {item.priceMax != null ? `${item.priceMax.toFixed(2)} KM` : "—"}
                             </span>
                         </p>
                     )}
@@ -231,6 +241,8 @@ function CatalogItemForm({ partnerId, partnerTypeCode, item, onClose }: CatalogI
     const defaultItemType = ["FLORIST", "PASTRY"].includes(partnerTypeCode) ? "PRODUCT" : "SERVICE"
     const [itemType, setItemType] = useState(item?.itemType ?? defaultItemType)
     const [basePrice, setBasePrice] = useState(item?.basePrice?.toString() ?? "")
+    const [priceMin, setPriceMin] = useState(item?.priceMin?.toString() ?? "")
+    const [priceMax, setPriceMax] = useState(item?.priceMax?.toString() ?? "")
     const [metadata, setMetadata] = useState<string | null>(item?.metadata ?? null)
 
     const create = useCreateCatalogItem()
@@ -243,6 +255,11 @@ function CatalogItemForm({ partnerId, partnerTypeCode, item, onClose }: CatalogI
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
         if (!name.trim()) return toast.error("Naziv je obavezan.")
+        const parsedMin = showBasePrice && priceMin ? parseFloat(priceMin) : null
+        const parsedMax = showBasePrice && priceMax ? parseFloat(priceMax) : null
+        if (parsedMin !== null && parsedMax !== null && parsedMin > parsedMax) {
+            return toast.error("Cijena od ne smije biti veća od cijene do.")
+        }
         try {
             if (isEdit) {
                 await update.mutateAsync({
@@ -252,6 +269,8 @@ function CatalogItemForm({ partnerId, partnerTypeCode, item, onClose }: CatalogI
                     description: description.trim() || null,
                     itemType,
                     basePrice: showBasePrice && basePrice ? parseFloat(basePrice) : null,
+                    priceMin: parsedMin,
+                    priceMax: parsedMax,
                     metadata,
                     isActive: item.isActive,
                     sortOrder: item.sortOrder,
@@ -264,6 +283,8 @@ function CatalogItemForm({ partnerId, partnerTypeCode, item, onClose }: CatalogI
                     description: description.trim() || null,
                     itemType,
                     basePrice: showBasePrice && basePrice ? parseFloat(basePrice) : null,
+                    priceMin: parsedMin,
+                    priceMax: parsedMax,
                     metadata,
                 })
             }
@@ -295,15 +316,39 @@ function CatalogItemForm({ partnerId, partnerTypeCode, item, onClose }: CatalogI
                     </Field>
                 )}
                 {showBasePrice && (
-                    <Field>
-                        <Label>Osnovna cijena (EUR)</Label>
-                        <Input
-                            type="number" min={0} step="0.01"
-                            value={basePrice}
-                            onChange={(e) => setBasePrice(e.target.value)}
-                            placeholder="0.00"
-                        />
-                    </Field>
+                    <>
+                        <Field>
+                            <Label>Osnovna cijena (KM)</Label>
+                            <Input
+                                type="number" min={0} step="0.01"
+                                value={basePrice}
+                                onChange={(e) => setBasePrice(e.target.value)}
+                                placeholder="Fiksna cijena koja uvijek vrijedi"
+                            />
+                            <p className="text-xs text-muted-foreground">Vrijedi uvijek — može se nadjačati posebnim cjenama</p>
+                        </Field>
+                        <div className="grid grid-cols-2 gap-3">
+                            <Field>
+                                <Label>Cijena od (KM)</Label>
+                                <Input
+                                    type="number" min={0} step="0.01"
+                                    value={priceMin}
+                                    onChange={(e) => setPriceMin(e.target.value)}
+                                    placeholder="Minimum"
+                                />
+                            </Field>
+                            <Field>
+                                <Label>Cijena do (KM)</Label>
+                                <Input
+                                    type="number" min={0} step="0.01"
+                                    value={priceMax}
+                                    onChange={(e) => setPriceMax(e.target.value)}
+                                    placeholder="Maksimum"
+                                />
+                            </Field>
+                        </div>
+                        <p className="text-xs text-muted-foreground -mt-2">Raspon za prikaz klijentu — informativno</p>
+                    </>
                 )}
             </FieldGroup>
 
@@ -414,11 +459,20 @@ function CatalogTab({
                                             )}
                                         </div>
                                         <div className="flex items-center gap-3 ml-4 shrink-0">
-                                            {item.basePrice != null && (
-                                                <span className="tabular-nums text-sm font-medium">
-                                                    {item.basePrice.toLocaleString("hr-HR", { style: "currency", currency: "EUR" })}
-                                                </span>
-                                            )}
+                                            <div className="text-right space-y-0.5">
+                                                {item.basePrice != null && (
+                                                    <span className="tabular-nums text-sm font-medium block">
+                                                        {item.basePrice.toFixed(2)} KM
+                                                    </span>
+                                                )}
+                                                {(item.priceMin != null || item.priceMax != null) && (
+                                                    <span className="tabular-nums text-xs text-muted-foreground block">
+                                                        {item.priceMin != null ? `${item.priceMin.toFixed(2)}` : "—"}
+                                                        {" – "}
+                                                        {item.priceMax != null ? `${item.priceMax.toFixed(2)} KM` : "—"}
+                                                    </span>
+                                                )}
+                                            </div>
                                             <Button
                                                 variant="ghost" size="icon-sm"
                                                 onClick={() => setEditItem(item)}

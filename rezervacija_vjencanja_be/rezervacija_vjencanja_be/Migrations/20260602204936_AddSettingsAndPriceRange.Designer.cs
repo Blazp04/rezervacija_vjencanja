@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RezervacijaVjencanja.Data;
 
@@ -11,9 +12,11 @@ using RezervacijaVjencanja.Data;
 namespace rezervacija_vjencanja_be.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260602204936_AddSettingsAndPriceRange")]
+    partial class AddSettingsAndPriceRange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,44 @@ namespace rezervacija_vjencanja_be.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RezervacijaVjencanja.Entities.AgencySettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)")
+                        .HasDefaultValue("");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Oib")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AgencySettings", (string)null);
+                });
 
             modelBuilder.Entity("RezervacijaVjencanja.Entities.BandMember", b =>
                 {
@@ -195,12 +236,6 @@ namespace rezervacija_vjencanja_be.Migrations
                     b.Property<decimal?>("BasePrice")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<decimal?>("PriceMin")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<decimal?>("PriceMax")
-                        .HasColumnType("decimal(10,2)");
-
                     b.Property<string>("Category")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -271,51 +306,7 @@ namespace rezervacija_vjencanja_be.Migrations
                             t.HasCheckConstraint("CHK_PartnerCatalogItems_PriceMin", "PriceMin IS NULL OR PriceMin >= 0");
 
                             t.HasCheckConstraint("CHK_PartnerCatalogItems_PriceRange", "PriceMin IS NULL OR PriceMax IS NULL OR PriceMin <= PriceMax");
-
-                            t.HasCheckConstraint("CHK_PartnerCatalogItems_PriceMax", "PriceMax IS NULL OR PriceMax >= 0");
-
-                            t.HasCheckConstraint("CHK_PartnerCatalogItems_PriceMin", "PriceMin IS NULL OR PriceMin >= 0");
-
-                            t.HasCheckConstraint("CHK_PartnerCatalogItems_PriceRange", "PriceMin IS NULL OR PriceMax IS NULL OR PriceMin <= PriceMax");
                         });
-                });
-
-            modelBuilder.Entity("RezervacijaVjencanja.Entities.AgencySettings", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)")
-                        .HasDefaultValue("");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("Oib")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AgencySettings");
                 });
 
             modelBuilder.Entity("RezervacijaVjencanja.Entities.PartnerType", b =>
@@ -673,16 +664,16 @@ namespace rezervacija_vjencanja_be.Migrations
 
             modelBuilder.Entity("RezervacijaVjencanja.Entities.WeddingPartner", b =>
                 {
+                    b.HasOne("RezervacijaVjencanja.Entities.PartnerCatalogItem", "CatalogItem")
+                        .WithMany()
+                        .HasForeignKey("CatalogItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("RezervacijaVjencanja.Entities.Partner", "Partner")
                         .WithMany()
                         .HasForeignKey("PartnerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("RezervacijaVjencanja.Entities.PartnerCatalogItem", "CatalogItem")
-                        .WithMany()
-                        .HasForeignKey("CatalogItemId")
-                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("RezervacijaVjencanja.Entities.Wedding", "Wedding")
                         .WithMany("WeddingPartners")

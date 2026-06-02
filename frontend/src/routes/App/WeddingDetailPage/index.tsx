@@ -158,7 +158,12 @@ function AddPartnerDialog({ weddingId, open, onOpenChange }: AddPartnerDialogPro
                                                 {ci.name}
                                                 {ci.basePrice != null && (
                                                     <span className="ml-2 text-muted-foreground text-xs">
-                                                        ({ci.basePrice.toFixed(2)} KM)
+                                                        {ci.basePrice.toFixed(2)} KM
+                                                    </span>
+                                                )}
+                                                {ci.basePrice == null && (ci.priceMin != null || ci.priceMax != null) && (
+                                                    <span className="ml-2 text-muted-foreground text-xs">
+                                                        {ci.priceMin != null ? `${ci.priceMin.toFixed(2)}` : "—"}–{ci.priceMax != null ? `${ci.priceMax.toFixed(2)} KM` : "—"}
                                                     </span>
                                                 )}
                                             </SelectItem>
@@ -277,7 +282,12 @@ function EditPartnerDialog({ weddingId, wp, open, onOpenChange }: EditPartnerDia
                                             {ci.name}
                                             {ci.basePrice != null && (
                                                 <span className="ml-2 text-muted-foreground text-xs">
-                                                    ({ci.basePrice.toFixed(2)} KM)
+                                                    {ci.basePrice.toFixed(2)} KM
+                                                </span>
+                                            )}
+                                            {ci.basePrice == null && (ci.priceMin != null || ci.priceMax != null) && (
+                                                <span className="ml-2 text-muted-foreground text-xs">
+                                                    {ci.priceMin != null ? `${ci.priceMin.toFixed(2)}` : "—"}–{ci.priceMax != null ? `${ci.priceMax.toFixed(2)} KM` : "—"}
                                                 </span>
                                             )}
                                         </SelectItem>
@@ -508,7 +518,7 @@ function StatusBadgeDropdown({ wp, weddingId, weddingDateTime: _dt, onConfirmCli
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-1 focus:outline-none">
+                <button className="flex items-center gap-1 focus:outline-none cursor-pointer">
                     <Badge variant={statusBadgeVariant(wp.status)} className={`cursor-pointer hover:opacity-80 transition-opacity ${statusBadgeClass(wp.status)}`}>
                         {STATUS_LABELS[wp.status] ?? wp.status}
                     </Badge>
@@ -640,14 +650,14 @@ function PartnersTab({ weddingId, weddingDateTime }: PartnersTabProps) {
                                             <div className="flex items-center gap-1">
                                                 <button
                                                     onClick={() => setEditWp(wp)}
-                                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                                    className="cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
                                                     title="Uredi dodjelu"
                                                 >
                                                     <PencilIcon className="h-4 w-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => setRemoveWpId(wp.id)}
-                                                    className="text-muted-foreground hover:text-destructive transition-colors"
+                                                    className="cursor-pointer text-muted-foreground hover:text-destructive transition-colors"
                                                     title="Ukloni partnera"
                                                 >
                                                     <Trash2Icon className="h-4 w-4" />
@@ -774,7 +784,7 @@ function DocumentsTab({ weddingId, weddingName, weddingDateTime }: DocumentsTabP
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <p className="text-sm text-muted-foreground">
-                            Dokument koji se predaje klijentu — prikazuje stvarne cijene s provizijom.
+                            Dokument koji se predaje klijentu — prikazuje samo ukupne iznose za uplatu.
                         </p>
                         <Button
                             className="w-full"
@@ -895,7 +905,7 @@ export default function WeddingDetailScreen({ params }: { params: Record<string,
                         return (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="flex items-center gap-1 focus:outline-none">
+                                    <button className="flex items-center gap-1 focus:outline-none cursor-pointer">
                                         {badge}
                                         <ChevronDownIcon className="h-4 w-4 text-muted-foreground" />
                                     </button>

@@ -49,6 +49,15 @@ public sealed class CatalogItemService(AppDbContext db) : ICatalogItemService
         if (request.BasePrice.HasValue && request.BasePrice.Value < 0)
             return ApiResponse<CatalogItemDto>.Fail("BasePrice must be >= 0.");
 
+        if (request.PriceMin.HasValue && request.PriceMin.Value < 0)
+            return ApiResponse<CatalogItemDto>.Fail("PriceMin must be >= 0.");
+
+        if (request.PriceMax.HasValue && request.PriceMax.Value < 0)
+            return ApiResponse<CatalogItemDto>.Fail("PriceMax must be >= 0.");
+
+        if (request.PriceMin.HasValue && request.PriceMax.HasValue && request.PriceMin > request.PriceMax)
+            return ApiResponse<CatalogItemDto>.Fail("PriceMin must be <= PriceMax.");
+
         if (request.Metadata is not null && !IsValidJson(request.Metadata))
             return ApiResponse<CatalogItemDto>.Fail("Metadata must be valid JSON.");
 
@@ -60,6 +69,8 @@ public sealed class CatalogItemService(AppDbContext db) : ICatalogItemService
             Description = request.Description?.Trim(),
             ItemType = request.ItemType,
             BasePrice = request.BasePrice,
+            PriceMin = request.PriceMin,
+            PriceMax = request.PriceMax,
             Metadata = request.Metadata,
             IsActive = true,
             SortOrder = 0,
@@ -83,6 +94,15 @@ public sealed class CatalogItemService(AppDbContext db) : ICatalogItemService
         if (request.BasePrice.HasValue && request.BasePrice.Value < 0)
             return ApiResponse<CatalogItemDto>.Fail("BasePrice must be >= 0.");
 
+        if (request.PriceMin.HasValue && request.PriceMin.Value < 0)
+            return ApiResponse<CatalogItemDto>.Fail("PriceMin must be >= 0.");
+
+        if (request.PriceMax.HasValue && request.PriceMax.Value < 0)
+            return ApiResponse<CatalogItemDto>.Fail("PriceMax must be >= 0.");
+
+        if (request.PriceMin.HasValue && request.PriceMax.HasValue && request.PriceMin > request.PriceMax)
+            return ApiResponse<CatalogItemDto>.Fail("PriceMin must be <= PriceMax.");
+
         if (request.Metadata is not null && !IsValidJson(request.Metadata))
             return ApiResponse<CatalogItemDto>.Fail("Metadata must be valid JSON.");
 
@@ -95,6 +115,8 @@ public sealed class CatalogItemService(AppDbContext db) : ICatalogItemService
         entity.Description = request.Description?.Trim();
         entity.ItemType = request.ItemType;
         entity.BasePrice = request.BasePrice;
+        entity.PriceMin = request.PriceMin;
+        entity.PriceMax = request.PriceMax;
         entity.Metadata = request.Metadata;
         entity.IsActive = request.IsActive;
         entity.SortOrder = request.SortOrder;
@@ -118,7 +140,7 @@ public sealed class CatalogItemService(AppDbContext db) : ICatalogItemService
 
     private static CatalogItemDto ToDto(PartnerCatalogItem c) => new(
         c.Id, c.PartnerId, c.Name, c.Category, c.Description,
-        c.ItemType, c.BasePrice, c.Metadata, c.IsActive, c.SortOrder);
+        c.ItemType, c.BasePrice, c.PriceMin, c.PriceMax, c.Metadata, c.IsActive, c.SortOrder);
 
     private static bool IsValidJson(string json)
     {

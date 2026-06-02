@@ -36,7 +36,7 @@ export function PanelTabStrip({ panel, onOpenPalette }: PanelTabStripProps) {
       ref={setNodeRef}
       onClick={() => setFocusedPanel(panel)}
       className={cn(
-        "flex items-center bg-muted/20 h-8 border-b transition-colors",
+        "flex items-center bg-muted/20 h-8 border-b transition-colors min-w-0 overflow-hidden",
         isFocused ? "border-primary" : "border-transparent",
         isOver && "ring-2 ring-primary/40 ring-inset",
       )}
