@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="rezervacija_vjencanja_be/rezervacija_vjencanja_be.csproj" />
+  <Project Path="rezervacija_vjencanja_be.Tests/rezervacija_vjencanja_be.Tests.csproj" />
   <Project Path="docker-compose.dcproj">
     <Build />
   </Project>

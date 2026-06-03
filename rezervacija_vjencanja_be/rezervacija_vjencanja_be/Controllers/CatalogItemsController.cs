@@ -2,6 +2,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using CsvHelper;
+using SystemPath = System.IO.Path;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RezervacijaVjencanja.Common;
@@ -258,7 +259,7 @@ public sealed class CatalogItemsController(ICatalogItemService service, AppDbCon
             await csv.NextRecordAsync();
         }
 
-        var safeName = string.Concat(partner.Name.Where(c => !Path.GetInvalidFileNameChars().Contains(c)));
+        var safeName = string.Concat(partner.Name.Where(c => !SystemPath.GetInvalidFileNameChars().Contains(c)));
         var date = DateTime.UtcNow.ToString("yyyy-MM-dd");
         var filename = $"catalog-{safeName}-{date}.csv";
 

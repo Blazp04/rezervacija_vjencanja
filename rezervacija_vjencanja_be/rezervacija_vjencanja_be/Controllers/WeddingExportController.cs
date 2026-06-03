@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text;
 using CsvHelper;
+using SystemPath = System.IO.Path;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RezervacijaVjencanja.Common;
@@ -67,7 +68,7 @@ public sealed class WeddingExportController(AppDbContext db) : ControllerBase
             await csv.NextRecordAsync();
         }
 
-        var safeName = string.Concat(wedding.Name.Where(c => !Path.GetInvalidFileNameChars().Contains(c)));
+        var safeName = string.Concat(wedding.Name.Where(c => !SystemPath.GetInvalidFileNameChars().Contains(c)));
         var date = DateTime.UtcNow.ToString("yyyy-MM-dd");
         var filename = $"partneri-{safeName}-{date}.csv";
 

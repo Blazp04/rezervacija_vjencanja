@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RezervacijaVjencanja.Services.Documents;
 using RezervacijaVjencanja.Services.Weddings;
+using SystemPath = System.IO.Path;
 
 namespace RezervacijaVjencanja.Controllers;
 
@@ -58,7 +59,7 @@ public sealed class DocumentsController(IDocumentService documentService, IWeddi
 
     private static string SanitizeFileName(string name)
     {
-        var invalid = Path.GetInvalidFileNameChars();
+        var invalid = SystemPath.GetInvalidFileNameChars();
         return new string(name.Select(c => invalid.Contains(c) ? '-' : c).ToArray())
             .Replace(' ', '-')
             .ToLowerInvariant();

@@ -15,6 +15,7 @@ using RezervacijaVjencanja.Services.WeddingPartners;
 using RezervacijaVjencanja.Services.WeddingTemplates;
 using RezervacijaVjencanja.Services.Weddings;
 using Scalar.AspNetCore;
+using System.Security.Claims;
 
 QuestPDF.Settings.License = LicenseType.Community;
 
@@ -36,6 +37,9 @@ builder.Services.AddScoped<IWeddingPartnerService, WeddingPartnerService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
 
+// -- HTTP client (used by AuthController to proxy token requests to Auth0)
+builder.Services.AddHttpClient();
+
 // -- REST API
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -47,12 +51,34 @@ builder.Services
     .AddMutationType<Mutation>();
 
 // -- Auth0 JWT Bearer authentication
+//    The JWT is validated against Auth0's JWKS endpoint.
+//    Custom claims added by Auth0 Actions are mapped to standard ClaimTypes.
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = builder.Configuration["Auth0:Authority"];
         options.Audience  = builder.Configuration["Auth0:Audience"];
+
+        // Map Auth0 namespaced custom claim → standard role claim so
+        // [Authorize(Roles = "admin")] works out of the box.
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = ctx =>
+            {
+                const string ns = "https://rezervacija-vjencanja";
+
+                if (ctx.Principal?.Identity is not ClaimsIdentity identity)
+                    return Task.CompletedTask;
+
+                // Role claim added by the Auth0 Action
+                var roleClaim = ctx.Principal.FindFirst($"{ns}/role");
+                if (roleClaim is not null)
+                    identity.AddClaim(new Claim(ClaimTypes.Role, roleClaim.Value));
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
