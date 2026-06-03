@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using QuestPDF.Infrastructure;
 using RezervacijaVjencanja.Data;
+using RezervacijaVjencanja.GraphQL;
 using RezervacijaVjencanja.Middleware;
 using RezervacijaVjencanja.Services.BandMembers;
 using RezervacijaVjencanja.Services.CatalogItems;
@@ -8,9 +10,9 @@ using RezervacijaVjencanja.Services.Documents;
 using RezervacijaVjencanja.Services.Partners;
 using RezervacijaVjencanja.Services.PartnerTypes;
 using RezervacijaVjencanja.Services.PricingRules;
+using RezervacijaVjencanja.Services.Settings;
 using RezervacijaVjencanja.Services.WeddingPartners;
 using RezervacijaVjencanja.Services.WeddingTemplates;
-using RezervacijaVjencanja.Services.Settings;
 using RezervacijaVjencanja.Services.Weddings;
 using Scalar.AspNetCore;
 
@@ -22,7 +24,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// -- Services
+// -- Services (unchanged)
 builder.Services.AddScoped<IPartnerTypeService, PartnerTypeService>();
 builder.Services.AddScoped<IPartnerService, PartnerService>();
 builder.Services.AddScoped<ICatalogItemService, CatalogItemService>();
@@ -34,11 +36,28 @@ builder.Services.AddScoped<IWeddingPartnerService, WeddingPartnerService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
 builder.Services.AddScoped<ISettingsService, SettingsService>();
 
-// -- API
+// -- REST API
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// -- CORS (React dev server)
+// -- GraphQL (HotChocolate)
+builder.Services
+    .AddGraphQLServer()
+    .AddQueryType<Query>()
+    .AddMutationType<Mutation>();
+
+// -- Auth0 JWT Bearer authentication
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["Auth0:Authority"];
+        options.Audience  = builder.Configuration["Auth0:Audience"];
+    });
+
+builder.Services.AddAuthorization();
+
+// -- CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactApp", policy =>
@@ -62,7 +81,7 @@ if (!app.Environment.IsEnvironment("Testing"))
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseCors("ReactApp");
 
-// Scalar API docs
+// Scalar REST API docs
 app.MapOpenApi();
 app.MapScalarApiReference(options =>
 {
@@ -70,8 +89,16 @@ app.MapScalarApiReference(options =>
     options.Theme = ScalarTheme.Purple;
 });
 
+// Authentication MUST come before Authorization
+app.UseAuthentication();
 app.UseAuthorization();
+
+// REST controllers (unchanged)
 app.MapControllers();
+
+// GraphQL endpoint + Banana Cake Pop IDE
+app.MapGraphQL("/graphql");
+
 app.Run();
 
 // Expose Program for WebApplicationFactory in test projects

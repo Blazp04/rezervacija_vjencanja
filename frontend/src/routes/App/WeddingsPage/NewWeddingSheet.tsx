@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { useCreateWedding } from "@/services/weddingsService"
-import { useWeddingTemplates, useWeddingTemplate } from "@/services/weddingTemplatesService"
+import { useWeddingTemplates, useWeddingTemplate, type TemplatePartnerTypeDto } from "@/services/weddingTemplatesService"
 import { usePartners } from "@/services/partnersService"
 import { usePartnerTypes } from "@/services/partnerTypesService"
 import { apiRequest, queryClient } from "@/services/apiClient"
@@ -149,7 +149,7 @@ export function NewWeddingSheet({ open, onOpenChange }: Props) {
             return
         }
         setSelections(
-            templateDetail.requiredPartnerTypes.map(rpt => {
+            templateDetail.requiredPartnerTypes.map((rpt: TemplatePartnerTypeDto) => {
                 const pt = partnerTypes.find(t => t.code === rpt.typeCode)
                 return {
                     typeCode: rpt.typeCode,

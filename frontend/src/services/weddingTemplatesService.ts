@@ -1,12 +1,44 @@
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
-import type { components } from "@/types/api";
 import { apiRequest, queryClient } from "./apiClient";
 
-export type WeddingTemplateListDto = components["schemas"]["WeddingTemplateListDto"];
-export type WeddingTemplateDto = NonNullable<components["schemas"]["WeddingTemplateDto"]>;
-export type TemplatePartnerTypeDto = components["schemas"]["TemplatePartnerTypeDto"];
-export type CreateWeddingTemplateRequest = components["schemas"]["CreateWeddingTemplateRequest"];
-export type UpdateWeddingTemplateRequest = components["schemas"]["UpdateWeddingTemplateRequest"];
+// Defined inline — these types are not present in the auto-generated api.d.ts schema.
+export interface TemplatePartnerTypeDto {
+    typeCode: string;
+    required: boolean;
+}
+
+export interface WeddingTemplateListDto {
+    id: number;
+    name: string;
+    description: string | null;
+    requiredPartnerTypesCount: number;
+}
+
+export interface WeddingTemplateDto {
+    id: number;
+    name: string;
+    description: string | null;
+    defaultNotes: string | null;
+    requiredPartnerTypes: TemplatePartnerTypeDto[];
+    isActive: boolean;
+    createdAt: string;
+}
+
+export interface CreateWeddingTemplateRequest {
+    name: string;
+    description: string | null;
+    defaultNotes: string | null;
+    requiredPartnerTypes: TemplatePartnerTypeDto[] | null;
+}
+
+export interface UpdateWeddingTemplateRequest {
+    id: number;
+    name: string;
+    description: string | null;
+    defaultNotes: string | null;
+    requiredPartnerTypes: TemplatePartnerTypeDto[] | null;
+    isActive: boolean;
+}
 
 const templatesQueryOptions = () =>
     queryOptions({

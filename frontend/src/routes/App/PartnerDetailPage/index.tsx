@@ -237,7 +237,7 @@ function CatalogItemForm({ partnerId, partnerTypeCode, item, onClose }: CatalogI
     const isEdit = !!item
     const [name, setName] = useState(item?.name ?? "")
     const [category, setCategory] = useState(item?.category ?? "")
-    const [description, setDescription] = useState(item?.description ?? "")
+    const [description] = useState(item?.description ?? "")
     const defaultItemType = ["FLORIST", "PASTRY"].includes(partnerTypeCode) ? "PRODUCT" : "SERVICE"
     const [itemType, setItemType] = useState(item?.itemType ?? defaultItemType)
     const [basePrice, setBasePrice] = useState(item?.basePrice?.toString() ?? "")
@@ -1168,12 +1168,12 @@ export default function PartnerDetailScreen({ params }: { params: Record<string,
                 .then((blob) => {
                     const blobUrl = URL.createObjectURL(blob)
                     a.href = blobUrl
-                    a.download = `catalog-${partner.name}-${new Date().toISOString().slice(0, 10)}.csv`
+                    a.download = `catalog-${partner!.name}-${new Date().toISOString().slice(0, 10)}.csv`
                     a.click()
                     URL.revokeObjectURL(blobUrl)
                 })
         } else {
-            a.download = `catalog-${partner.name}.csv`
+            a.download = `catalog-${partner!.name}.csv`
             a.click()
         }
     }
