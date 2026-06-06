@@ -36,9 +36,6 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=RezervacijaVjencanja;User Id=sa;Password=Dev#Str0ngPass1;TrustServerCertificate=True;"
-    volumes:
-      - /Users/marko/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
-      - /Users/marko/.aspnet/https:/root/.aspnet/https:ro    
     depends_on:
       sqlserver:
         condition: service_healthy
