@@ -54,7 +54,6 @@ public sealed class AuthController(IConfiguration config, IHttpClientFactory htt
     }
 }
 
-// ── DTOs ────────────────────────────────────────────────────────────────────────
 
 public record LoginRequest(string Username, string Password);
 

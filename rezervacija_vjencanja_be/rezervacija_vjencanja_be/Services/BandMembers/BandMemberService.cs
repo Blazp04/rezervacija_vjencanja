@@ -20,6 +20,7 @@ public sealed class BandMemberService(AppDbContext db) : IBandMemberService
             .Select(m => ToDto(m))
             .ToListAsync();
 
+
         return ApiResponse<IEnumerable<BandMemberDto>>.Ok(members);
     }
 

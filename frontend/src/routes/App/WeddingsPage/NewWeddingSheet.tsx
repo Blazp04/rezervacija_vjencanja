@@ -33,13 +33,12 @@ const INITIAL_FORM = {
     notes: "",
 }
 
-// ── Step 2 – partner selection per type ───────────────────────────────────────
 
 interface PartnerSelectionEntry {
     typeCode: string
     typeName: string
     required: boolean
-    selectedPartnerId: string   // "" means none
+    selectedPartnerId: string 
 }
 
 interface Step2Props {
@@ -126,7 +125,6 @@ function PartnerSelectionStep({ selections, onChange, partnersByTypeCode }: Step
     )
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
 
 export function NewWeddingSheet({ open, onOpenChange }: Props) {
     const [step, setStep] = useState<1 | 2>(1)

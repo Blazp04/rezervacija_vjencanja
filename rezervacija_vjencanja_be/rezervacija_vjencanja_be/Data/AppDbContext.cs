@@ -20,7 +20,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
     {
         base.OnModelCreating(modelBuilder);
 
-        // ── PartnerTypes ────────────────────────────────────────────────────────
         modelBuilder.Entity<PartnerType>(entity =>
         {
             entity.ToTable("PartnerTypes", t =>
@@ -38,7 +37,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(e => e.Code).IsUnique().HasDatabaseName("UQ_PartnerTypes_Code");
         });
 
-        // ── Partners ────────────────────────────────────────────────────────────
         modelBuilder.Entity<Partner>(entity =>
         {
             entity.ToTable("Partners", t =>
@@ -69,7 +67,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(e => e.IsActive).HasDatabaseName("IX_Partners_IsActive");
         });
 
-        // ── PartnerCatalogItems ─────────────────────────────────────────────────
         modelBuilder.Entity<PartnerCatalogItem>(entity =>
         {
             entity.ToTable("PartnerCatalogItems", t =>
@@ -105,7 +102,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(e => e.IsActive).HasDatabaseName("IX_PartnerCatalogItems_IsActive");
         });
 
-        // ── PricingRules ────────────────────────────────────────────────────────
         modelBuilder.Entity<PricingRule>(entity =>
         {
             entity.ToTable("PricingRules", t =>
@@ -129,7 +125,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(e => e.RuleType).HasDatabaseName("IX_PricingRules_RuleType");
         });
 
-        // ── BandMembers ─────────────────────────────────────────────────────────
         modelBuilder.Entity<BandMember>(entity =>
         {
             entity.ToTable("BandMembers");
@@ -147,7 +142,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(e => e.PartnerId).HasDatabaseName("IX_BandMembers_PartnerId");
         });
 
-        // ── WeddingTemplates ────────────────────────────────────────────────────
         modelBuilder.Entity<WeddingTemplate>(entity =>
         {
             entity.ToTable("WeddingTemplates", t =>
@@ -166,7 +160,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("GETDATE()");
         });
 
-        // ── Weddings ────────────────────────────────────────────────────────────
         modelBuilder.Entity<Wedding>(entity =>
         {
             entity.ToTable("Weddings", t =>
@@ -189,7 +182,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(e => e.DateTime).HasDatabaseName("IX_Weddings_DateTime");
         });
 
-        // ── WeddingPartners ─────────────────────────────────────────────────────
         modelBuilder.Entity<WeddingPartner>(entity =>
         {
             entity.ToTable("WeddingPartners", t =>
@@ -228,7 +220,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(e => e.Status).HasDatabaseName("IX_WeddingPartners_Status");
         });
 
-        // ── Bookings ────────────────────────────────────────────────────────────
         modelBuilder.Entity<Booking>(entity =>
         {
             entity.ToTable("Bookings", t =>
@@ -259,7 +250,6 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
             entity.HasIndex(e => new { e.PartnerId, e.StartDateTime, e.EndDateTime }).HasDatabaseName("IX_Bookings_DateRange");
         });
 
-        // ── AgencySettings ──────────────────────────────────────────────────────
         modelBuilder.Entity<AgencySettings>(entity =>
         {
             entity.ToTable("AgencySettings");

@@ -15,7 +15,6 @@ interface Props {
     onChange: (json: string | null) => void
 }
 
-// ── Dynamic KV editor (used when no structured schema exists) ─────────────────
 function KVEditor({ value, onChange }: { value: string | null | undefined; onChange: (json: string | null) => void }) {
     const parsed = parseMetadata(value)
     const initPairs = Object.entries(parsed).map(([k, v]) => ({ key: k, value: String(v ?? "") }))

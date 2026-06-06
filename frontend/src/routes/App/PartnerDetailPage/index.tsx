@@ -26,7 +26,6 @@ import { API_BASE_URL } from "@/services/apiClient"
 import type { CatalogItemDto } from "@/services/catalogItemsService"
 import type { BandMemberDto } from "@/services/bandMembersService"
 
-// ── Days of week mapping ──────────────────────────────────────────────────────
 const DAYS_OF_WEEK = [
     { value: 1, label: "Ponedjeljak" },
     { value: 2, label: "Utorak" },
@@ -37,7 +36,6 @@ const DAYS_OF_WEEK = [
     { value: 7, label: "Nedjelja" },
 ]
 
-// ── Pricing Rules Section ─────────────────────────────────────────────────────
 function AddPricingRuleForm({ itemId, onClose }: { itemId: number; onClose: () => void }) {
     const [ruleType, setRuleType] = useState<"SPECIAL_DAY" | "SPECIFIC_DATE">("SPECIAL_DAY")
     const [dayOfWeek, setDayOfWeek] = useState("6")
@@ -225,7 +223,6 @@ function PricingRulesSection({ item }: { item: CatalogItemDto }) {
     )
 }
 
-// ── Add/Edit Catalog Item Form ────────────────────────────────────────────────
 interface CatalogItemFormProps {
     partnerId: number
     partnerTypeCode: string
@@ -372,7 +369,6 @@ function CatalogItemForm({ partnerId, partnerTypeCode, item, onClose }: CatalogI
     )
 }
 
-// ── Catalog Tab ───────────────────────────────────────────────────────────────
 function CatalogTab({
     partnerId,
     partnerTypeCode,
@@ -524,7 +520,6 @@ function CatalogTab({
     )
 }
 
-// ── Band Members Tab ──────────────────────────────────────────────────────────
 interface InlineMemberRowProps {
     partnerId: number
     member?: BandMemberDto
@@ -676,7 +671,6 @@ function BandMembersTab({ partnerId }: { partnerId: number }) {
     )
 }
 
-// ── Availability Tab ──────────────────────────────────────────────────────────
 function AvailabilityTab({ partnerId }: { partnerId: number }) {
     const { data: bookings = [], isLoading } = useBookings(partnerId)
     const [checkStart, setCheckStart] = useState("")
@@ -810,7 +804,6 @@ function AvailabilityTab({ partnerId }: { partnerId: number }) {
     )
 }
 
-// ── CSV Import Modal ──────────────────────────────────────────────────────────
 interface CsvImportModalProps {
     partnerId: number
     open: boolean
@@ -1127,7 +1120,6 @@ function CsvImportModal({ partnerId, open, onOpenChange, onSuccess }: CsvImportM
     )
 }
 
-// ── Main PartnerDetailPage ────────────────────────────────────────────────────
 export default function PartnerDetailScreen({ params }: { params: Record<string, string> }) {
     const id = Number(params.id)
     const { data: partner, isLoading, isError } = usePartner(id)

@@ -73,7 +73,6 @@ public sealed class CatalogItemsController(ICatalogItemService service, AppDbCon
         return Ok(result);
     }
 
-    // ── CSV Import ──────────────────────────────────────────────────────────────
 
     [HttpPost("api/partners/{partnerId:int}/catalog/import/preview")]
     [ProducesResponseType(typeof(ApiResponse<CsvPreviewResponse>), StatusCodes.Status200OK)]
@@ -219,7 +218,6 @@ public sealed class CatalogItemsController(ICatalogItemService service, AppDbCon
         return Ok(ApiResponse<CsvImportResponse>.Ok(new CsvImportResponse(imported, skipped.Count, skipped)));
     }
 
-    // ── CSV Export ──────────────────────────────────────────────────────────────
 
     [HttpGet("api/partners/{partnerId:int}/catalog/export")]
     public async Task<IActionResult> Export(int partnerId)
