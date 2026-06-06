@@ -22,7 +22,6 @@ namespace RezervacijaVjencanja.GraphQL;
 
 public class Mutation
 {
-    // ── Weddings ────────────────────────────────────────────────────────────────
 
     public async Task<MutationResult<WeddingDto>> CreateWedding(
         CreateWeddingInput input,
@@ -70,7 +69,6 @@ public class Mutation
             : new MutationResult<bool>(result.Data, null);
     }
 
-    // ── Wedding Templates ───────────────────────────────────────────────────────
 
     public async Task<MutationResult<WeddingTemplateDto>> CreateWeddingTemplate(
         CreateWeddingTemplateInput input,
@@ -118,7 +116,6 @@ public class Mutation
             : new MutationResult<bool>(result.Data, null);
     }
 
-    // ── Partner Types ───────────────────────────────────────────────────────────
 
     public async Task<MutationResult<PartnerTypeDto>> CreatePartnerType(
         CreatePartnerTypeInput input,
@@ -153,7 +150,6 @@ public class Mutation
             : new MutationResult<bool>(result.Data, null);
     }
 
-    // ── Partners ────────────────────────────────────────────────────────────────
 
     public async Task<MutationResult<PartnerDto>> CreatePartner(
         CreatePartnerInput input,
@@ -202,7 +198,6 @@ public class Mutation
             : new MutationResult<PartnerDto>(result.Data, null);
     }
 
-    // ── Catalog Items ───────────────────────────────────────────────────────────
 
     public async Task<MutationResult<CatalogItemDto>> CreateCatalogItem(
         CreateCatalogItemInput input,
@@ -241,7 +236,6 @@ public class Mutation
             : new MutationResult<bool>(result.Data, null);
     }
 
-    // ── Pricing Rules ───────────────────────────────────────────────────────────
 
     public async Task<MutationResult<PricingRuleDto>> CreatePricingRule(
         CreatePricingRuleInput input,
@@ -280,7 +274,6 @@ public class Mutation
             : new MutationResult<bool>(result.Data, null);
     }
 
-    // ── Band Members ────────────────────────────────────────────────────────────
 
     public async Task<MutationResult<BandMemberDto>> CreateBandMember(
         CreateBandMemberInput input,
@@ -317,7 +310,6 @@ public class Mutation
             : new MutationResult<bool>(result.Data, null);
     }
 
-    // ── Wedding Partners ────────────────────────────────────────────────────────
 
     public async Task<MutationResult<WeddingPartnerDto>> AddWeddingPartner(
         CreateWeddingPartnerInput input,
@@ -381,7 +373,6 @@ public class Mutation
             : new MutationResult<WeddingPartnerDto>(result.Data, null);
     }
 
-    // ── Settings ────────────────────────────────────────────────────────────────
 
     public async Task<MutationResult<AgencySettingsDto>> UpdateAgencySettings(
         UpdateAgencySettingsInput input,

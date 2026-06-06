@@ -1,6 +1,5 @@
 namespace RezervacijaVjencanja.Entities;
 
-/// <summary>Single-row table that holds agency-wide settings (Id is always 1).</summary>
 public sealed class AgencySettings
 {
     public int Id { get; set; } = 1;

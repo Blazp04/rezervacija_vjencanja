@@ -25,7 +25,6 @@ namespace RezervacijaVjencanja.GraphQL;
 
 public class Query
 {
-    // ── Weddings ────────────────────────────────────────────────────────────────
 
     public async Task<IEnumerable<WeddingListDto>> GetWeddings(
         string? status,
@@ -43,7 +42,6 @@ public class Query
         return result.Data;
     }
 
-    // ── Wedding Templates ───────────────────────────────────────────────────────
 
     public async Task<IEnumerable<WeddingTemplateListDto>> GetWeddingTemplates(
         [Service] IWeddingTemplateService service)
@@ -60,7 +58,6 @@ public class Query
         return result.Data;
     }
 
-    // ── Partner Types ───────────────────────────────────────────────────────────
 
     public async Task<IEnumerable<PartnerTypeDto>> GetPartnerTypes(
         [Service] IPartnerTypeService service)
@@ -77,7 +74,6 @@ public class Query
         return result.Data;
     }
 
-    // ── Partners ────────────────────────────────────────────────────────────────
 
     public async Task<IEnumerable<PartnerListDto>> GetPartners(
         int? partnerTypeId,
@@ -144,7 +140,6 @@ public class Query
         return new AvailabilityDto(!conflicts.Any(), conflicts);
     }
 
-    // ── Catalog Items ───────────────────────────────────────────────────────────
 
     public async Task<IEnumerable<CatalogItemDto>> GetCatalogItemsByPartner(
         int partnerId,
@@ -162,7 +157,6 @@ public class Query
         return result.Data;
     }
 
-    // ── Pricing Rules ───────────────────────────────────────────────────────────
 
     public async Task<IEnumerable<PricingRuleDto>> GetPricingRules(
         int catalogItemId,
@@ -172,7 +166,6 @@ public class Query
         return result.Data ?? [];
     }
 
-    // ── Band Members ────────────────────────────────────────────────────────────
 
     public async Task<IEnumerable<BandMemberDto>> GetBandMembers(
         int partnerId,
@@ -182,7 +175,6 @@ public class Query
         return result.Data ?? [];
     }
 
-    // ── Wedding Partners ────────────────────────────────────────────────────────
 
     public async Task<IEnumerable<WeddingPartnerDto>> GetWeddingPartners(
         int weddingId,
@@ -201,7 +193,6 @@ public class Query
         return result.Data;
     }
 
-    // ── Settings ────────────────────────────────────────────────────────────────
 
     public async Task<AgencySettingsDto?> GetAgencySettings(
         [Service] ISettingsService service)
@@ -210,7 +201,6 @@ public class Query
         return result.Data;
     }
 
-    // ── Calendar ────────────────────────────────────────────────────────────────
 
     public async Task<CalendarMonthGqlDto> GetCalendar(
         int year,
@@ -248,7 +238,6 @@ public class Query
     }
 }
 
-// Calendar-specific return types (DateTime instead of string to let HotChocolate serialize properly)
 public record CalendarWeddingGqlDto(
     int Id,
     string Name,
