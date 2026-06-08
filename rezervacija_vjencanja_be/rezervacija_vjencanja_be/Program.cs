@@ -106,23 +106,20 @@ if (!app.Environment.IsEnvironment("Testing"))
 // -- Middleware pipeline
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseCors("ReactApp");
+app.UseWebSockets();
 
-// Scalar REST API docs
+// Authentication MUST come before Authorization
+app.UseAuthentication();
+app.UseAuthorization();
+
+// -- Endpoints
 app.MapOpenApi();
 app.MapScalarApiReference(options =>
 {
     options.Title = "Rezervacija Vjencanja API";
     options.Theme = ScalarTheme.Purple;
 });
-
-// Authentication MUST come before Authorization
-app.UseAuthentication();
-app.UseAuthorization();
-
-// REST controllers (unchanged)
 app.MapControllers();
-
-// GraphQL endpoint + Banana Cake Pop IDE
 app.MapGraphQL("/graphql");
 
 app.Run();

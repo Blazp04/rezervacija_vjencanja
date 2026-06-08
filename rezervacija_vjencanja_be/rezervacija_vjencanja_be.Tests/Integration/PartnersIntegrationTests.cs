@@ -6,6 +6,7 @@ using RezervacijaVjencanja.Common;
 using RezervacijaVjencanja.Data;
 using RezervacijaVjencanja.DTOs.Partners;
 using RezervacijaVjencanja.Tests.Helpers;
+using Xunit;
 
 namespace RezervacijaVjencanja.Tests.Integration;
 

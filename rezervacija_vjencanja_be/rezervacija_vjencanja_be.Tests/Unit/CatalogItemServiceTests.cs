@@ -96,7 +96,7 @@ public sealed class CatalogItemServiceTests
         var pt = SeedHelpers.AddPartnerType(db);
         var p  = SeedHelpers.AddPartner(db, pt.Id);
         var svc = new CatalogItemService(db);
-        var req = new CreateCatalogItemRequest(p.Id, "DJ Set", "Music", "Full evening", "SERVICE", 800m, null);
+        var req = new CreateCatalogItemRequest(p.Id, "DJ Set", "Music", "Full evening", "SERVICE", 800m, null, null, null);
 
         var result = await svc.CreateAsync(req);
 
@@ -117,7 +117,7 @@ public sealed class CatalogItemServiceTests
         var pt = SeedHelpers.AddPartnerType(db);
         var p  = SeedHelpers.AddPartner(db, pt.Id);
         var svc = new CatalogItemService(db);
-        var req = new CreateCatalogItemRequest(p.Id, "Item", null, null, itemType, null, null);
+        var req = new CreateCatalogItemRequest(p.Id, "Item", null, null, itemType, null, null, null, null);
 
         var result = await svc.CreateAsync(req);
 
@@ -132,7 +132,7 @@ public sealed class CatalogItemServiceTests
         var pt = SeedHelpers.AddPartnerType(db);
         var p  = SeedHelpers.AddPartner(db, pt.Id);
         var svc = new CatalogItemService(db);
-        var req = new CreateCatalogItemRequest(p.Id, "  ", null, null, "SERVICE", null, null);
+        var req = new CreateCatalogItemRequest(p.Id, "  ", null, null, "SERVICE", null, null, null, null);
 
         var result = await svc.CreateAsync(req);
 
@@ -147,7 +147,7 @@ public sealed class CatalogItemServiceTests
         var pt = SeedHelpers.AddPartnerType(db);
         var p  = SeedHelpers.AddPartner(db, pt.Id);
         var svc = new CatalogItemService(db);
-        var req = new CreateCatalogItemRequest(p.Id, "Item", null, null, "INVALID", null, null);
+        var req = new CreateCatalogItemRequest(p.Id, "Item", null, null, "INVALID", null, null, null, null);
 
         var result = await svc.CreateAsync(req);
 
@@ -160,7 +160,7 @@ public sealed class CatalogItemServiceTests
     {
         using var db = DbContextFactory.Create();
         var svc = new CatalogItemService(db);
-        var req = new CreateCatalogItemRequest(999, "Item", null, null, "SERVICE", null, null);
+        var req = new CreateCatalogItemRequest(999, "Item", null, null, "SERVICE", null, null, null, null);
 
         var result = await svc.CreateAsync(req);
 
@@ -175,7 +175,7 @@ public sealed class CatalogItemServiceTests
         var pt = SeedHelpers.AddPartnerType(db);
         var p  = SeedHelpers.AddPartner(db, pt.Id);
         var svc = new CatalogItemService(db);
-        var req = new CreateCatalogItemRequest(p.Id, "Item", null, null, "SERVICE", -1m, null);
+        var req = new CreateCatalogItemRequest(p.Id, "Item", null, null, "SERVICE", -1m, null, null, null);
 
         var result = await svc.CreateAsync(req);
 
@@ -190,7 +190,7 @@ public sealed class CatalogItemServiceTests
         var pt = SeedHelpers.AddPartnerType(db);
         var p  = SeedHelpers.AddPartner(db, pt.Id);
         var svc = new CatalogItemService(db);
-        var req = new CreateCatalogItemRequest(p.Id, "Item", null, null, "SERVICE", null, "not-json");
+        var req = new CreateCatalogItemRequest(p.Id, "Item", null, null, "SERVICE", null, null, null, "not-json");
 
         var result = await svc.CreateAsync(req);
 
@@ -210,7 +210,7 @@ public sealed class CatalogItemServiceTests
         var p  = SeedHelpers.AddPartner(db, pt.Id);
         var ci = SeedHelpers.AddCatalogItem(db, p.Id, "Old Name", "SERVICE", 100m);
         var svc = new CatalogItemService(db);
-        var req = new UpdateCatalogItemRequest("New Name", "Cat", "Desc", "PRODUCT", 200m, null, false, 5);
+        var req = new UpdateCatalogItemRequest("New Name", "Cat", "Desc", "PRODUCT", 200m, null, null, null, false, 5);
 
         var result = await svc.UpdateAsync(ci.Id, req);
 
@@ -226,7 +226,7 @@ public sealed class CatalogItemServiceTests
     {
         using var db = DbContextFactory.Create();
         var svc = new CatalogItemService(db);
-        var req = new UpdateCatalogItemRequest("Name", null, null, "SERVICE", null, null, true, 0);
+        var req = new UpdateCatalogItemRequest("Name", null, null, "SERVICE", null, null, null, null, true, 0);
 
         var result = await svc.UpdateAsync(999, req);
 
@@ -242,7 +242,7 @@ public sealed class CatalogItemServiceTests
         var p  = SeedHelpers.AddPartner(db, pt.Id);
         var ci = SeedHelpers.AddCatalogItem(db, p.Id);
         var svc = new CatalogItemService(db);
-        var req = new UpdateCatalogItemRequest("  ", null, null, "SERVICE", null, null, true, 0);
+        var req = new UpdateCatalogItemRequest("  ", null, null, "SERVICE", null, null, null, null, true, 0);
 
         var result = await svc.UpdateAsync(ci.Id, req);
 
